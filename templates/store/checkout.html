@@ -1,0 +1,607 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ivory:     #FAF8F4;
+    --cream:     #F2EDE4;
+    --sand:      #D6C9B4;
+    --espresso:  #2B1F14;
+    --mink:      #7A6656;
+    --blush:     #C8967A;
+    --gold:      #B89B6A;
+    --white:     #FFFFFF;
+    --font-serif: 'Cormorant Garamond', serif;
+    --font-sans:  'Jost', sans-serif;
+  }
+
+  body {
+    background: var(--ivory);
+    font-family: var(--font-sans);
+    color: var(--espresso);
+  }
+
+  /* ── TOP BAR ── */
+  .sn-topbar {
+    background: var(--espresso);
+    color: var(--sand);
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 10px 0;
+    font-weight: 500;
+  }
+
+  /* ── HEADER ── */
+  .sn-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--cream);
+    padding: 22px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sn-logo {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--espresso);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+  }
+  .sn-logo em { font-style: italic; color: var(--gold); }
+
+  .sn-header-steps {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sand);
+    font-weight: 500;
+  }
+  .sn-header-steps .step { color: var(--mink); }
+  .sn-header-steps .step.active { color: var(--espresso); font-weight: 600; }
+  .sn-header-steps .sep { color: var(--sand); }
+
+  .sn-secure {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--mink);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── PAGE ── */
+  .sn-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+  .sn-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .sn-title {
+    font-family: var(--font-serif);
+    font-size: 44px;
+    font-weight: 300;
+    text-align: center;
+    color: var(--espresso);
+    letter-spacing: 0.02em;
+    margin-bottom: 52px;
+    line-height: 1.1;
+  }
+  .sn-title em { font-style: italic; color: var(--mink); }
+
+  /* ── GRID ── */
+  .sn-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .sn-grid { grid-template-columns: 1fr; }
+    .sn-header { padding: 18px 20px; }
+    .sn-header-steps { display: none; }
+  }
+
+  /* ── CARDS ── */
+  .sn-card {
+    background: var(--white);
+    border: 1px solid var(--cream);
+    margin-bottom: 20px;
+    overflow: hidden;
+    animation: fadeUp 0.55s ease both;
+  }
+  .sn-card:nth-child(1) { animation-delay: 0.05s; }
+  .sn-card:nth-child(2) { animation-delay: 0.15s; }
+
+  .sn-card-head {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sn-card-head-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--espresso);
+    color: var(--ivory);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sn-card-head-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--espresso);
+  }
+  .sn-card-body { padding: 28px 32px; }
+
+  /* ── FORM ── */
+  .sn-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .sn-form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .sn-form-group { margin-bottom: 20px; }
+  .sn-form-group:last-child { margin-bottom: 0; }
+
+  .sn-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mink);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .sn-label .req { color: var(--gold); margin-left: 2px; }
+
+  .sn-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid var(--sand);
+    background: var(--ivory);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--espresso);
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.02em;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .sn-input::placeholder { color: var(--sand); font-weight: 300; }
+  .sn-input:focus {
+    border-color: var(--gold);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(184,155,106,0.1);
+  }
+
+  textarea.sn-input { resize: vertical; min-height: 90px; }
+
+  /* ── ORDER SUMMARY CARD (dark) ── */
+  .sn-summary-card {
+    background: var(--espresso);
+    border: none;
+    overflow: hidden;
+    position: sticky;
+    top: 28px;
+    animation: fadeUp 0.55s ease 0.3s both;
+  }
+  .sn-summary-head {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sn-summary-head-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--ivory);
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+  .sn-summary-head-sub {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sand);
+    opacity: 0.6;
+  }
+  .sn-summary-body { padding: 24px 28px; }
+
+  /* Items */
+  .sn-order-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .sn-order-item:last-child { border-bottom: none; }
+  .sn-order-item-img {
+    width: 52px; height: 64px;
+    object-fit: cover;
+    background: var(--mink);
+    flex-shrink: 0;
+  }
+  .sn-order-item-info { flex: 1; }
+  .sn-order-item-name {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ivory);
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .sn-order-item-qty {
+    font-size: 11px;
+    color: var(--sand);
+    opacity: 0.6;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .sn-order-item-price {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: var(--ivory);
+    font-weight: 400;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .sn-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin: 20px 0;
+  }
+
+  .sn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .sn-row-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sand);
+    opacity: 0.7;
+  }
+  .sn-row-val {
+    font-size: 14px;
+    color: var(--ivory);
+    font-family: var(--font-serif);
+    letter-spacing: 0.02em;
+  }
+
+  .sn-grand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 20px 0 24px;
+  }
+  .sn-grand-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .sn-grand-val {
+    font-family: var(--font-serif);
+    font-size: 30px;
+    font-weight: 300;
+    color: var(--white);
+  }
+
+  /* ── CTA BUTTON ── */
+  .sn-btn-primary {
+    width: 100%;
+    padding: 16px 24px;
+    background: var(--gold);
+    color: var(--espresso);
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    margin-bottom: 12px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .sn-btn-primary:hover {
+    background: var(--blush);
+    color: var(--white);
+    transform: translateY(-1px);
+  }
+  .sn-btn-secondary {
+    width: 100%;
+    padding: 14px 24px;
+    background: transparent;
+    color: var(--sand);
+    border: 1px solid rgba(255,255,255,0.15);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+  }
+  .sn-btn-secondary:hover {
+    border-color: var(--sand);
+    color: var(--ivory);
+  }
+
+  /* Trust */
+  .sn-trust {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sn-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--sand);
+    opacity: 0.55;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── FOOTER ── */
+  .sn-footer {
+    border-top: 1px solid var(--cream);
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--sand);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .sn-footer a { color: var(--mink); text-decoration: none; }
+  .sn-footer a:hover { color: var(--gold); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .sn-form-row, .sn-form-row-3 { grid-template-columns: 1fr; }
+    .sn-title { font-size: 32px; }
+    .sn-footer { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+
+<!-- TOP BAR -->
+<div class="sn-topbar">Free shipping on orders over ₹1500 &nbsp;·&nbsp; Easy returns within 30 days</div>
+
+<!-- HEADER -->
+<header class="sn-header">
+  <a href="/" class="sn-logo">Style<em>Nest</em></a>
+  <div class="sn-header-steps">
+    <span class="step">Cart</span>
+    <span class="sep">›</span>
+    <span class="step active">Details</span>
+    <span class="sep">›</span>
+    <span class="step">Review &amp; Pay</span>
+  </div>
+  <div class="sn-secure">
+    <svg width="13" height="15" viewBox="0 0 13 15" fill="none">
+      <path d="M6.5 0.5L1 2.5V7C1 10.15 3.4 13.1 6.5 14C9.6 13.1 12 10.15 12 7V2.5L6.5 0.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/>
+    </svg>
+    Secure Checkout
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="sn-page">
+  <p class="sn-eyebrow">Step 2 of 3</p>
+  <h1 class="sn-title">Billing <em>Details</em></h1>
+
+  <div class="sn-grid">
+
+    <!-- LEFT: BILLING FORM -->
+    <div>
+      <form action="{% url 'place_order' %}" method="POST" id="billing-form">
+        {% csrf_token %}
+
+        <!-- Personal Details -->
+        <div class="sn-card">
+          <div class="sn-card-head">
+            <div class="sn-card-head-num">1</div>
+            <span class="sn-card-head-title">Personal Information</span>
+          </div>
+          <div class="sn-card-body">
+            <div class="sn-form-row">
+              <div>
+                <label class="sn-label">First Name <span class="req">*</span></label>
+                <input type="text" name="first_name" class="sn-input" placeholder="Jane" required>
+              </div>
+              <div>
+                <label class="sn-label">Last Name <span class="req">*</span></label>
+                <input type="text" name="last_name" class="sn-input" placeholder="Doe" required>
+              </div>
+            </div>
+            <div class="sn-form-row">
+              <div>
+                <label class="sn-label">Email Address <span class="req">*</span></label>
+                <input type="email" name="email" class="sn-input" placeholder="jane@example.com" required>
+              </div>
+              <div>
+                <label class="sn-label">Phone Number <span class="req">*</span></label>
+                <input type="text" name="phone" class="sn-input" placeholder="+91 00000 00000" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="sn-card">
+          <div class="sn-card-head">
+            <div class="sn-card-head-num">2</div>
+            <span class="sn-card-head-title">Shipping Address</span>
+          </div>
+          <div class="sn-card-body">
+            <div class="sn-form-group">
+              <label class="sn-label">Address Line 1 <span class="req">*</span></label>
+              <input type="text" name="address_line_1" class="sn-input" placeholder="Street address, apartment, suite…" required>
+            </div>
+            <div class="sn-form-group">
+              <label class="sn-label">Address Line 2</label>
+              <input type="text" name="address_line_2" class="sn-input" placeholder="Optional">
+            </div>
+            <div class="sn-form-row-3">
+              <div>
+                <label class="sn-label">City <span class="req">*</span></label>
+                <input type="text" name="city" class="sn-input" placeholder="Mumbai" required>
+              </div>
+              <div>
+                <label class="sn-label">State <span class="req">*</span></label>
+                <input type="text" name="state" class="sn-input" placeholder="Maharashtra" required>
+              </div>
+              <div>
+                <label class="sn-label">Country <span class="req">*</span></label>
+                <input type="text" name="country" class="sn-input" placeholder="India" required>
+              </div>
+            </div>
+            <div class="sn-form-group" style="margin-top: 20px;">
+              <label class="sn-label">Order Note</label>
+              <textarea name="order_note" class="sn-input" placeholder="Special instructions for your order…"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- RIGHT: ORDER SUMMARY -->
+    <div>
+      <div class="sn-summary-card">
+        <div class="sn-summary-head">
+          <div class="sn-summary-head-title">Order Summary</div>
+          <div class="sn-summary-head-sub">{{ cart_items|length }} item{% if cart_items|length != 1 %}s{% endif %} in your bag</div>
+        </div>
+        <div class="sn-summary-body">
+
+          <!-- Cart Items -->
+          {% for cart_item in cart_items %}
+          <div class="sn-order-item">
+            <img src="{{ cart_item.product.images.url }}" class="sn-order-item-img" alt="{{ cart_item.product.product_name }}">
+            <div class="sn-order-item-info">
+              <div class="sn-order-item-name">{{ cart_item.product.product_name }}</div>
+              <div class="sn-order-item-qty">Qty: {{ cart_item.quantity }}</div>
+            </div>
+            <div class="sn-order-item-price">₹{{ cart_item.sub_total }}</div>
+          </div>
+          {% endfor %}
+
+          <hr class="sn-divider">
+
+          <div class="sn-row">
+            <span class="sn-row-label">Subtotal</span>
+            <span class="sn-row-val">₹{{ total }}</span>
+          </div>
+          <div class="sn-row">
+            <span class="sn-row-label">Tax (2%)</span>
+            <span class="sn-row-val">₹{{ tax }}</span>
+          </div>
+          <div class="sn-row">
+            <span class="sn-row-label">Shipping</span>
+            <span class="sn-row-val" style="color: var(--gold); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; font-family: var(--font-sans);">Free</span>
+          </div>
+
+          <hr class="sn-divider">
+
+          <div class="sn-grand-row">
+            <span class="sn-grand-label">Grand Total</span>
+            <span class="sn-grand-val">₹{{ grand_total }}</span>
+          </div>
+
+          <button type="submit" form="billing-form" class="sn-btn-primary">
+            Continue to Payment
+          </button>
+          <a href="{% url 'shop' %}" class="sn-btn-secondary">
+            ← Continue Shopping
+          </a>
+
+          <!-- Trust badges -->
+          <div class="sn-trust">
+            <div class="sn-trust-item">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L2 3V7.5C2 10.2 4.2 12.7 7 13.5C9.8 12.7 12 10.2 12 7.5V3L7 1Z" stroke="currentColor" stroke-width="1.2"/></svg>
+              256-bit SSL encryption
+            </div>
+            <div class="sn-trust-item">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 7L6.5 8.5L9 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Money-back guarantee
+            </div>
+            <div class="sn-trust-item">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5h10M2 9h6M5 12l2-10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Free returns within 30 days
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="sn-footer">
+  <span>© 2025 StyleNest</span>
+  <span>
+    <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="#">Terms of Service</a> &nbsp;·&nbsp;
+    <a href="#">Contact</a>
+  </span>
+  <span>Crafted with care</span>
+</footer>
+
+{% endblock %}

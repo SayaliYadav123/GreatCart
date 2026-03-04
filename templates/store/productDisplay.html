@@ -1,0 +1,871 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="container py-5 my-2" id="product-display">
+
+    <!-- Header -->
+    <div class="d-flex align-items-end justify-content-between mb-5 reveal flex-wrap gap-3">
+        <div>
+            <div class="sec-label">Our Collection</div>
+            <h2 class="sec-title">{{ gender.name }}'s Collection</h2>
+        </div>
+        <!-- Switch gender tabs -->
+        <div class="d-flex gap-2 flex-wrap">
+            {% for g in all_genders %}
+            <a href="{% url 'product_display' g.slug %}"
+               class="filter-btn {% if g.slug == gender.slug %}active{% endif %}">
+                {{ g.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Category pills — clicking loads products below via AJAX (no page change) -->
+    <div class="category-subfilter mb-5 reveal">
+        {% for cat in categories %}
+        <button class="cat-filter-btn" onclick="loadProducts('{{ cat.slug }}', this)">
+            {{ cat.category_name }}
+        </button>
+        {% empty %}
+        <p style="color:var(--muted)">No categories found.</p>
+        {% endfor %}
+    </div>
+
+<!-- ================= AI MINI SECTION (FULLY MOBILE READY) ================= -->
+<section class="ai-section-mini">
+    <div class="container">
+        <div class="ai-card-mini reveal">
+            <div class="ai-mini-left">
+                <div class="ai-mini-icon"><i class="bi bi-stars"></i></div>
+                <div>
+                    <div class="ai-mini-title">AI Fashion Try-On</div>
+                    <div class="ai-mini-desc" id="aiDesc">Upload your photo — we'll dress you up!</div>
+                </div>
+            </div>
+            <div class="ai-mini-right">
+
+                <!-- Gallery/file upload (works on all devices) -->
+                <input type="file" id="userPhotoInput"
+                       accept="image/*"
+                       style="display:none"
+                       onchange="handlePhotoUpload(event)">
+
+                <!-- Native camera (mobile only — capture attribute triggers camera app) -->
+                <input type="file" id="cameraInput"
+                       accept="image/*"
+                       capture="user"
+                       style="display:none"
+                       onchange="handlePhotoUpload(event)">
+
+                <button class="btn-gold-mini" onclick="document.getElementById('userPhotoInput').click()">
+                    <i class="bi bi-image me-1"></i>
+                    <span class="btn-label-full">Upload Photo</span>
+                    <span class="btn-label-short">Upload</span>
+                </button>
+
+                <button class="btn-outline-mini" onclick="handleCameraClick()">
+                    <i class="bi bi-camera me-1"></i>
+                    <span class="btn-label-full">Open Camera</span>
+                    <span class="btn-label-short">Camera</span>
+                </button>
+
+                <!-- Preview shown after photo selected -->
+                <div id="photoPreview" style="display:none;align-items:center;gap:8px;">
+                    <img id="previewImg" src="" alt="Your photo"
+                         onclick="document.getElementById('userPhotoInput').click()"
+                         title="Tap to change"
+                         style="width:34px;height:34px;border-radius:50%;object-fit:cover;
+                                border:2px solid var(--gold);cursor:pointer;flex-shrink:0;">
+                    <span id="photoName" style="font-size:.7rem;color:rgba(255,255,255,.6);"></span>
+                    <button onclick="clearPhoto()"
+                            style="background:rgba(255,255,255,.1);border:none;
+                                   color:rgba(255,255,255,.6);cursor:pointer;
+                                   font-size:.68rem;padding:3px 8px;border-radius:3px;
+                                   font-family:'DM Sans',sans-serif;white-space:nowrap;">
+                        ✕ Clear
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ── Desktop Camera Modal ── -->
+<div id="cameraModal"
+     style="display:none;position:fixed;inset:0;z-index:9999;
+            background:rgba(0,0,0,.92);align-items:center;justify-content:center;
+            padding:16px;">
+    <div style="background:#1a1a1a;border-radius:12px;overflow:hidden;
+                width:100%;max-width:440px;">
+
+        <div style="background:#111;padding:14px 20px;
+                    display:flex;justify-content:space-between;align-items:center;
+                    border-bottom:1px solid rgba(255,255,255,.07)">
+            <span style="font-family:'Playfair Display',serif;color:#fff;font-size:.95rem;">
+                📸 Take a Photo
+            </span>
+            <button onclick="closeCamera()"
+                    style="background:none;border:none;color:rgba(255,255,255,.5);
+                           font-size:1.4rem;cursor:pointer;line-height:1;padding:0;">✕</button>
+        </div>
+
+        <div style="position:relative;background:#000;aspect-ratio:4/3;overflow:hidden;">
+            <video id="cameraFeed" autoplay playsinline muted
+                   style="width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s;"></video>
+
+            <!-- Body outline guide -->
+            <div style="position:absolute;inset:0;display:flex;align-items:center;
+                        justify-content:center;pointer-events:none;">
+                <div style="width:50%;aspect-ratio:3/4;border:2px solid var(--gold);
+                            border-radius:50% 50% 40% 40%;opacity:.45;"></div>
+            </div>
+
+            <!-- Starting camera state -->
+            <div id="camLoading" style="position:absolute;inset:0;background:#000;
+                 display:flex;flex-direction:column;align-items:center;
+                 justify-content:center;color:#fff;gap:10px;">
+                <div style="font-size:2rem;animation:aiSpin 1s linear infinite">⏳</div>
+                <span style="font-size:.75rem;color:rgba(255,255,255,.4)">Starting camera…</span>
+            </div>
+
+            <!-- Permission denied state -->
+            <div id="camError" style="position:absolute;inset:0;background:#1a1a1a;
+                 display:none;flex-direction:column;align-items:center;
+                 justify-content:center;gap:14px;padding:24px;text-align:center;">
+                <div style="font-size:2.5rem">🚫</div>
+                <p style="font-size:.8rem;color:rgba(255,255,255,.5);margin:0;line-height:1.6">
+                    Camera access denied.<br>Allow permissions or upload a photo instead.
+                </p>
+                <button onclick="closeCamera();setTimeout(()=>document.getElementById('userPhotoInput').click(),200)"
+                        style="background:var(--gold);color:var(--charcoal);border:none;
+                               padding:9px 22px;font-family:'DM Sans',sans-serif;
+                               font-weight:600;font-size:.75rem;cursor:pointer;border-radius:3px;">
+                    📁 Upload Instead
+                </button>
+            </div>
+        </div>
+
+        <div style="padding:14px 20px;display:flex;gap:10px;
+                    justify-content:center;background:#111;">
+            <button onclick="capturePhoto()"
+                    style="background:var(--gold);color:var(--charcoal);border:none;
+                           padding:12px 34px;font-family:'DM Sans',sans-serif;font-size:.78rem;
+                           letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+                           cursor:pointer;border-radius:4px;animation:camPulse 1.8s infinite;">
+                📸 Capture
+            </button>
+            <button onclick="switchCamera()"
+                    style="background:rgba(255,255,255,.07);color:#fff;
+                           border:1px solid rgba(255,255,255,.12);padding:12px 16px;
+                           font-family:'DM Sans',sans-serif;font-size:.78rem;
+                           cursor:pointer;border-radius:4px;">
+                🔄 Flip
+            </button>
+        </div>
+
+        <canvas id="captureCanvas" style="display:none;"></canvas>
+    </div>
+</div>
+
+
+<style>
+.ai-section-mini {
+    background: var(--charcoal);
+    padding: 16px 0;
+    position: relative; z-index: 10;
+}
+.ai-card-mini {
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap;
+    gap: 12px; padding-left: 16px;
+    border-left: 3px solid var(--gold);
+}
+.ai-mini-left  { display:flex; align-items:center; gap:12px; }
+.ai-mini-icon  {
+    width:34px; height:34px; background:var(--gold); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.9rem; color:var(--charcoal); flex-shrink:0;
+}
+.ai-mini-title { font-family:'Playfair Display',serif; font-size:.9rem; color:#fff; font-weight:700; }
+.ai-mini-desc  { font-size:.7rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.ai-mini-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+
+.btn-gold-mini {
+    background:var(--gold); color:var(--charcoal); border:none;
+    padding:8px 14px; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase;
+    font-weight:700; font-family:'DM Sans',sans-serif;
+    cursor:pointer; border-radius:3px; transition:opacity .2s;
+}
+.btn-gold-mini:hover { opacity:.82; }
+.btn-outline-mini {
+    background:transparent; color:#fff;
+    border:1.5px solid rgba(255,255,255,.2); padding:7px 14px;
+    font-size:.7rem; letter-spacing:.1em; text-transform:uppercase;
+    font-family:'DM Sans',sans-serif; cursor:pointer; border-radius:3px; transition:all .2s;
+}
+.btn-outline-mini:hover { border-color:var(--gold); color:var(--gold); }
+
+/* Responsive labels */
+.btn-label-short { display:none; }
+@media(max-width:500px) {
+    .btn-label-full  { display:none; }
+    .btn-label-short { display:inline; }
+    .ai-mini-desc    { display:none; }
+}
+@media(max-width:380px) {
+    .btn-gold-mini, .btn-outline-mini { padding:7px 10px; font-size:.65rem; }
+}
+
+@keyframes camPulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(191,162,106,.5); }
+    50%      { box-shadow:0 0 0 10px rgba(191,162,106,0); }
+}
+@keyframes aiSpin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+</style>
+
+
+<script>
+/* ══════════════════════════════════════
+   PHOTO STORAGE — persists via localStorage
+   window.userTryOnPhoto = base64 | null
+══════════════════════════════════════ */
+window.userTryOnPhoto = localStorage.getItem('userTryOnPhoto') || null;
+
+// Restore preview on page load if photo exists
+if (window.userTryOnPhoto) {
+    // Use DOMContentLoaded in case DOM isn't ready yet
+    document.addEventListener('DOMContentLoaded', function() {
+        showPhotoPreview(window.userTryOnPhoto, 'saved-photo.jpg');
+    });
+}
+
+function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+        alert('Please select an image file.'); return;
+    }
+
+    compressImage(file, 800, 0.88, function(dataUrl) {
+        window.userTryOnPhoto = dataUrl;
+        localStorage.setItem('userTryOnPhoto', dataUrl); // ← persist
+        showPhotoPreview(dataUrl, file.name);
+
+        if (window._pendingTryOn) {
+            const name = window._pendingTryOn.name;
+            const id   = window._pendingTryOn.id;
+            const src  = window._pendingTryOn.src;
+            window._pendingTryOn = null;
+            setTimeout(() => openTryOn(src, name, id), 400);
+        }
+    });
+
+    event.target.value = '';
+}
+
+function compressImage(file, maxWidth, quality, callback) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let w = img.width, h = img.height;
+            if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            callback(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function showPhotoPreview(dataUrl, fileName) {
+    document.getElementById('previewImg').src = dataUrl;
+    const short = fileName.length > 14 ? fileName.substring(0, 14) + '…' : fileName;
+    document.getElementById('photoName').textContent = short;
+    document.getElementById('photoPreview').style.display = 'flex';
+    document.getElementById('aiDesc').textContent = '✅ Photo ready! Tap ✨ Try On any product.';
+}
+
+function clearPhoto() {
+    window.userTryOnPhoto = null;
+    localStorage.removeItem('userTryOnPhoto'); // ← clear persisted
+    document.getElementById('photoPreview').style.display = 'none';
+    document.getElementById('previewImg').src = '';
+    document.getElementById('aiDesc').textContent = "Upload your photo — we'll dress you up!";
+}
+
+
+/* ══════════════════════════════════════
+   CAMERA
+   Mobile  → native <input capture>
+   Desktop → getUserMedia modal
+══════════════════════════════════════ */
+let videoStream = null;
+let facingMode  = 'user';
+
+function isMobileDevice() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+}
+
+function handleCameraClick() {
+    if (isMobileDevice()) {
+        document.getElementById('cameraInput').click();
+    } else if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        openDesktopCamera();
+    } else {
+        alert('Camera not available. Please upload a photo instead.');
+        document.getElementById('userPhotoInput').click();
+    }
+}
+
+function openDesktopCamera() {
+    document.getElementById('cameraModal').style.display = 'flex';
+    document.getElementById('camLoading').style.display  = 'flex';
+    document.getElementById('camError').style.display    = 'none';
+    document.getElementById('cameraFeed').style.opacity  = '0';
+    startCameraStream();
+}
+
+function startCameraStream() {
+    if (videoStream) videoStream.getTracks().forEach(t => t.stop());
+
+    navigator.mediaDevices.getUserMedia({
+        video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+    })
+    .then(stream => {
+        videoStream = stream;
+        const video = document.getElementById('cameraFeed');
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+            video.play();
+            document.getElementById('camLoading').style.display = 'none';
+            video.style.opacity = '1';
+        };
+    })
+    .catch(() => {
+        document.getElementById('camLoading').style.display = 'none';
+        document.getElementById('camError').style.display   = 'flex';
+    });
+}
+
+function switchCamera() {
+    facingMode = facingMode === 'user' ? 'environment' : 'user';
+    document.getElementById('cameraFeed').style.opacity = '0';
+    document.getElementById('camLoading').style.display = 'flex';
+    startCameraStream();
+}
+
+function capturePhoto() {
+    const video  = document.getElementById('cameraFeed');
+    const canvas = document.getElementById('captureCanvas');
+    if (!video.videoWidth) { alert('Camera not ready yet.'); return; }
+
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    if (facingMode === 'user') {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+    }
+    ctx.drawImage(video, 0, 0);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    window.userTryOnPhoto = dataUrl;
+    localStorage.setItem('userTryOnPhoto', dataUrl); // ← persist
+    showPhotoPreview(dataUrl, 'camera-shot.jpg');
+    closeCamera();
+
+    if (window._pendingTryOn) {
+        const name = window._pendingTryOn.name;
+        const id   = window._pendingTryOn.id;
+        const src  = window._pendingTryOn.src;
+        window._pendingTryOn = null;
+        setTimeout(() => openTryOn(src, name, id), 400);
+    }
+}
+
+function closeCamera() {
+    if (videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
+    const video = document.getElementById('cameraFeed');
+    if (video) video.srcObject = null;
+    document.getElementById('cameraModal').style.display = 'none';
+}
+
+document.getElementById('cameraModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('cameraModal')) closeCamera();
+});
+window.addEventListener('pagehide', closeCamera);
+
+
+/* ══════════════════════════════════════
+   INTERCEPT Try On clicks
+   If no photo → prompt upload first
+══════════════════════════════════════ */
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.btn-tryon');
+    if (!btn || window.userTryOnPhoto) return;
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const wantUpload = confirm(
+        '📸 Upload YOUR photo for the best Try-On!\n\n' +
+        'OK  →  Choose a photo from gallery\n' +
+        'Cancel  →  Try on with product image only'
+    );
+
+    // Parse all 3 args: imgSrc, name, productId
+    const match = (btn.getAttribute('onclick') || '')
+        .match(/openTryOn\(['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]\s*,\s*(\d+)\)/);
+
+    if (wantUpload) {
+        if (match) window._pendingTryOn = { src: match[1], name: match[2], id: match[3] };
+        document.getElementById('userPhotoInput').click();
+    } else {
+        if (match) openTryOn(match[1], match[2], match[3]);
+    }
+}, true);
+
+
+/* ══════════════════════════════════════
+   CSRF HELPER
+══════════════════════════════════════ */
+function getCsrfToken() {
+    const value = `; ${document.cookie}`;
+    const parts = value.split('; csrftoken=');
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return '';
+}
+</script>
+
+    <!-- Products appear here after clicking a category pill -->
+    <div id="product-section" style="display:none">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h4 class="sec-title" id="active-category-title" style="font-size:1.4rem"></h4>
+            <span id="product-count" style="font-size:.8rem;color:var(--muted)"></span>
+        </div>
+        <div class="row g-4" id="product-list"></div>
+    </div>
+
+    <!-- Initial prompt (shown before any category is selected) -->
+    <div id="select-prompt" class="text-center py-5" style="color:var(--muted)">
+        <i class="bi bi-hand-index-thumb" style="font-size:2.5rem;display:block;margin-bottom:14px"></i>
+        <p>Select a category above to browse products</p>
+    </div>
+
+</section>
+
+<!-- ================= TRY-ON MODAL ================= -->
+<div class="tryon-modal" id="tryonModal">
+    <div class="tryon-box">
+        <div class="tryon-header">
+            <span>🧵 Ustad Darzi's Fitting Room</span>
+            <button class="tryon-close" onclick="closeTryOn()">✕</button>
+        </div>
+        <div class="tryon-body">
+            <div id="tryonLoader" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
+                <div class="tailor-scene" id="tailorScene" style="font-size:2.8rem;height:80px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px">
+                    <span id="tailorLeft"  style="display:inline-block">👨‍🦳</span>
+                    <span id="tailorMid"   style="display:inline-block;font-size:2.2rem">📏</span>
+                    <span id="tailorRight" style="display:inline-block">🧍</span>
+                </div>
+                <div class="loader-step-title" id="stepTitle">Step 1: Taking Measurements</div>
+                <div class="loader-step-sub"  id="stepSub">"Hmm… you've been eating well I see 👀"</div>
+                <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+                <div class="loader-steps" id="stepDots"></div>
+            </div>
+            <div class="tryon-result" id="tryonResult">
+    <div class="tryon-result-label">🎉 Masterpiece Ready!</div>
+    <img id="tryonImg" src="" alt="Try On Result"
+         style="width:100%;max-width:480px;max-height:80vh;
+                object-fit:contain;border-radius:8px;
+                display:block;margin:0 auto;">
+    <div class="tryon-result-sub">"My finest work yet!" — Ustad Darzi 🧵</div>
+</div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    /* ── Comedy Tailor Steps ── */
+    const tailorSteps = [
+        {
+            title: "Step 1: Taking Measurements 📏",
+            sub: '"Hmm… you\'ve been eating well I see 👀"',
+            left: "👨\u200d🦳", mid: "📏", right: "🧍",
+            leftAnim: "animation:measure 0.5s infinite alternate",
+            midAnim:  "animation:measure 0.4s infinite alternate",
+            rightAnim: ""
+        },
+        {
+            title: "Step 2: Choosing the Fabric 🎨",
+            sub: '"Sir, pink is VERY in this season… trust me"',
+            left: "👨\u200d🦳", mid: "🧶", right: "🪡",
+            leftAnim: "animation:sew 0.5s infinite alternate",
+            midAnim:  "animation:spin 0.6s linear infinite",
+            rightAnim: "animation:float 1s ease-in-out infinite alternate"
+        },
+        {
+            title: "Step 3: Cutting the Cloth ✂️",
+            sub: '"Oops… that was supposed to be a sleeve 😬"',
+            left: "👨\u200d🦳", mid: "✂️", right: "🧣",
+            leftAnim: "animation:cut 0.3s infinite alternate",
+            midAnim:  "animation:cut 0.25s infinite alternate",
+            rightAnim: "animation:tremble 0.3s infinite"
+        },
+        {
+            title: "Step 4: Sewing It Together 🪡",
+            sub: '"Just 40 more stitches… no hurry haha"',
+            left: "👨\u200d🦳", mid: "🪡", right: "🧥",
+            leftAnim: "animation:sew 0.4s infinite alternate",
+            midAnim:  "animation:sew 0.3s infinite alternate",
+            rightAnim: "animation:pulse 0.5s infinite alternate"
+        },
+        {
+            title: "Step 5: Ironing the Wrinkles 🔥",
+            sub: '"I may have burnt a small hole… shhh"',
+            left: "👨\u200d🦳", mid: "🧲", right: "👕",
+            leftAnim: "animation:iron 0.6s infinite alternate",
+            midAnim:  "animation:iron 0.5s infinite alternate",
+            rightAnim: "animation:steam 0.6s infinite alternate"
+        },
+        {
+            title: "Step 6: The Grand Fitting! 🎭",
+            sub: '"Turn around… perfect! Don\'t look at the back"',
+            left: "🕺", mid: "🪞", right: "👨\u200d🦳",
+            leftAnim: "animation:celebrate 0.4s infinite alternate",
+            midAnim:  "animation:pulse 0.5s infinite alternate",
+            rightAnim: "animation:celebrate 0.3s infinite alternate"
+        }
+    ];
+
+    const styleTag = document.createElement('style');
+    styleTag.textContent = `
+        @keyframes measure   { from{transform:rotate(-12deg)} to{transform:rotate(12deg)} }
+        @keyframes cut       { from{transform:rotate(-20deg) translateY(-4px)} to{transform:rotate(20deg) translateY(4px)} }
+        @keyframes tremble   { 0%{transform:rotate(-4deg)} 50%{transform:rotate(4deg)} 100%{transform:rotate(-4deg)} }
+        @keyframes sew       { from{transform:translateY(-6px)} to{transform:translateY(6px)} }
+        @keyframes iron      { from{transform:translateX(-10px) rotate(-5deg)} to{transform:translateX(10px) rotate(5deg)} }
+        @keyframes steam     { from{transform:scaleX(1) skewX(-4deg)} to{transform:scaleX(1.07) skewX(4deg)} }
+        @keyframes spin      { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @keyframes float     { from{transform:translateY(0) rotate(-5deg)} to{transform:translateY(-10px) rotate(5deg)} }
+        @keyframes pulse     { from{transform:scale(1)} to{transform:scale(1.25)} }
+        @keyframes celebrate { from{transform:rotate(-18deg) scale(1)} to{transform:rotate(18deg) scale(1.2)} }
+    `;
+    document.head.appendChild(styleTag);
+
+    /* ══════════════════════════════════════
+       OPEN TRY-ON — calls Django API
+       imgSrc    : product image URL
+       name      : product name
+       productId : product DB id
+    ══════════════════════════════════════ */
+    function openTryOn(imgSrc, name, productId) {
+        const modal     = document.getElementById('tryonModal');
+        const loader    = document.getElementById('tryonLoader');
+        const result    = document.getElementById('tryonResult');
+        const fill      = document.getElementById('loaderFill');
+        const stepTitle = document.getElementById('stepTitle');
+        const stepSub   = document.getElementById('stepSub');
+        const dots      = document.getElementById('stepDots');
+        const lLeft     = document.getElementById('tailorLeft');
+        const lMid      = document.getElementById('tailorMid');
+        const lRight    = document.getElementById('tailorRight');
+
+        // Reset modal
+        loader.style.display = 'flex';
+        result.style.display = 'none';
+        fill.style.width = '0%';
+        modal.classList.add('open');
+
+        // Build dots
+        dots.innerHTML = tailorSteps.map((_, i) =>
+            `<div class="step-dot" id="dot${i}"></div>`
+        ).join('');
+
+        const totalDuration = 8000;
+const stepDuration  = totalDuration / tailorSteps.length;
+let currentStep = 0;
+let elapsed = 0;
+        let apiDone = false;
+        let animDone = false;
+        let apiResultSrc = null;
+
+        function applyStep(i) {
+            const s = tailorSteps[i];
+            stepTitle.textContent = s.title;
+            stepSub.textContent   = s.sub;
+            lLeft.textContent  = s.left;
+            lMid.textContent   = s.mid;
+            lRight.textContent = s.right;
+            lLeft.style.cssText  = `display:inline-block;${s.leftAnim}`;
+            lMid.style.cssText   = `display:inline-block;font-size:2.2rem;${s.midAnim}`;
+            lRight.style.cssText = `display:inline-block;${s.rightAnim}`;
+            tailorSteps.forEach((_, j) => {
+                document.getElementById('dot' + j).className =
+                    'step-dot' + (j < i ? ' done' : j === i ? ' active' : '');
+            });
+        }
+
+        applyStep(0);
+
+        const stepInterval = setInterval(() => {
+    currentStep = (currentStep + 1) % tailorSteps.length;
+    applyStep(currentStep);
+}, stepDuration);
+
+        const barInterval = setInterval(() => {
+    elapsed += 60;
+    if (elapsed >= totalDuration) elapsed = totalDuration * 0.1;
+    fill.style.width = Math.min((elapsed / totalDuration) * 100, 95) + '%';
+}, 60);
+
+        // ── Show final result (waits for BOTH animation + API) ──
+        function tryShowResult() {
+            if (!animDone || !apiDone) return; // wait for both
+            clearInterval(stepInterval);
+            clearInterval(barInterval);
+            fill.style.width = '100%';
+            tailorSteps.forEach((_, j) => {
+                document.getElementById('dot' + j).className = 'step-dot done';
+            });
+            setTimeout(() => {
+    loader.style.display = 'none';
+    const img = document.getElementById('tryonImg');
+    
+    // Test if the result image actually loads
+    const testImg = new Image();
+    testImg.onload = function() {
+        console.log('✅ Result image loaded successfully:', apiResultSrc);
+        img.src = apiResultSrc;
+    };
+    testImg.onerror = function() {
+        console.error('❌ Result image failed to load:', apiResultSrc);
+        img.src = imgSrc; // fallback to product image
+    };
+    testImg.src = apiResultSrc || imgSrc;
+    
+    result.style.display = 'flex';
+}, 400);
+        }
+
+        // Animation done after totalDuration
+        setTimeout(() => {
+            animDone = true;
+            tryShowResult();
+        }, totalDuration + 200);
+
+        // ── Call Django API ──
+        const userPhoto = window.userTryOnPhoto;
+
+        if (!userPhoto) {
+            // No user photo — skip API, just show product image
+            apiResultSrc = imgSrc;
+            apiDone = true;
+            tryShowResult();
+            return;
+        }
+
+       fetch("{% url 'tryon_ajax' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                user_photo:    userPhoto,
+                product_image: imgSrc,
+                product_id:    productId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('✅ TryOn API response:', data);
+            console.log('SUCCESS:', data.success);
+            console.log('RESULT URL:', data.result_url);
+            apiResultSrc = data.success ? data.result_url : imgSrc;
+            if (!data.success) console.warn('❌ Try-on API failed:', data.error);
+            apiDone = true;
+            tryShowResult();
+        })
+        .catch(err => {
+            console.error('Try-on fetch error:', err);
+            apiResultSrc = imgSrc; // fallback
+            apiDone = true;
+            tryShowResult();
+        });
+    }
+
+    function closeTryOn() {
+        document.getElementById('tryonModal').classList.remove('open');
+    }
+    document.getElementById('tryonModal').addEventListener('click', function(e) {
+        if (e.target === this) closeTryOn();
+    });
+</script>
+
+<style>
+.category-subfilter { display:flex; flex-wrap:wrap; gap:10px; }
+.cat-filter-btn {
+    padding:10px 24px; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+    border:1.5px solid rgba(0,0,0,.12); background:transparent; color:var(--muted);
+    font-family:'DM Sans',sans-serif; font-weight:500;
+    cursor:pointer; border-radius:6px; transition:all .22s;
+}
+.cat-filter-btn:hover { border-color:var(--gold); color:var(--charcoal); transform:translateY(-2px); }
+.cat-filter-btn.active { background:var(--charcoal); color:var(--white); border-color:var(--charcoal); font-weight:600; }
+.prod-img-wrap {
+    position: relative;
+    overflow: hidden;
+    height: 320px;
+    background: #f5f4f1;
+}
+.prod-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform .4s ease;
+}
+.product-card:hover .prod-img-wrap img {
+    transform: scale(1.05);
+}
+.prod-category-tag { font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); font-weight:500; margin-bottom:2px; }
+
+.prod-overlay {
+    position:absolute; inset:0; background:rgba(0,0,0,.32);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:10px; opacity:0; transition:opacity .3s;
+}
+.product-card:hover .prod-overlay { opacity:1; }
+.prod-overlay-btn {
+    border:none; padding:10px 22px; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    font-family:'DM Sans',sans-serif; font-weight:600; cursor:pointer;
+    transform:translateY(10px); transition:transform .3s .05s;
+    width:155px; text-align:center; display:block; text-decoration:none;
+}
+.product-card:hover .prod-overlay-btn { transform:translateY(0); }
+.btn-cart  { background:var(--white); color:var(--charcoal); }
+.btn-tryon { background:var(--gold);  color:var(--charcoal); transition-delay:.08s !important; }
+.btn-tryon:hover { opacity:.85; }
+
+.skeleton-card {
+    height:340px; border-radius:6px;
+    background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);
+    background-size:200% 100%; animation:shimmer 1.2s infinite;
+}
+@keyframes shimmer { from{background-position:200% 0} to{background-position:-200% 0} }
+</style>
+
+
+<script>
+// AJAX endpoint — Django injects the correct gender slug
+const AJAX_URL = "{% url 'load_products' gender.slug %}";
+
+function loadProducts(categorySlug, btn) {
+    // 1. Update active pill
+    document.querySelectorAll('.cat-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    // 2. Show product section, hide prompt
+    document.getElementById('select-prompt').style.display  = 'none';
+    document.getElementById('product-section').style.display = 'block';
+    document.getElementById('active-category-title').textContent = btn ? btn.textContent.trim() : 'All Products';
+
+    // 3. Show skeletons while loading
+    const grid = document.getElementById('product-list');
+    grid.innerHTML = Array(6).fill(0).map(() => `
+        <div class="col-md-4 col-sm-6">
+            <div class="skeleton-card"></div>
+        </div>`).join('');
+    document.getElementById('product-count').textContent = '';
+
+    // 4. Fetch products via AJAX
+    fetch(`${AJAX_URL}?category=${categorySlug}`)
+        .then(res => res.json())
+        .then(data => renderProducts(data.products, btn ? btn.textContent.trim() : 'All Products'))
+        .catch(() => {
+            grid.innerHTML = `
+                <div class="col-12 empty-state">
+                    <i class="bi bi-wifi-off" style="font-size:2rem;display:block;margin-bottom:10px"></i>
+                    <p>Something went wrong. Please try again.</p>
+                </div>`;
+        });
+}
+
+function renderProducts(products, categoryName) {
+    const grid  = document.getElementById('product-list');
+    const count = document.getElementById('product-count');
+
+    count.textContent = `${products.length} product${products.length !== 1 ? 's' : ''} found`;
+
+    if (products.length === 0) {
+        grid.innerHTML = `
+            <div class="col-12 empty-state">
+                <i class="bi bi-bag-x" style="font-size:2.4rem;display:block;margin-bottom:12px"></i>
+                <p>No products in ${categoryName} yet.</p>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = products.map((p, i) => `
+        <div class="col-md-4 col-sm-6" style="animation:fadeUp .45s ${i * 0.07}s both">
+            <div class="product-card">
+                <div class="prod-img-wrap">
+                    <img src="${p.image || 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600'}"
+                         alt="${p.name}">
+
+                    ${p.stock <= 0
+                        ? `<div class="prod-badge" style="background:#dc3545">Out of Stock</div>`
+                        : p.stock <= 5
+                            ? `<div class="prod-badge" style="background:#e67e22">Only ${p.stock} left!</div>`
+                            : `<div class="prod-badge">New</div>`
+                    }
+
+                    <div class="prod-overlay">
+                        <a href="${p.url}" class="prod-overlay-btn btn-cart">
+    🛍️ View Product
+</a>
+                        <button class="prod-overlay-btn btn-tryon"
+                            onclick="openTryOn('${p.image}', '${p.name.replace(/'/g, "\\'")}', ${p.id})">
+                            ✨ Try On
+                        </button>
+                    </div>
+                </div>
+
+                <a href="${p.url}" class="text-decoration-none">
+                    <div class="prod-body">
+                        <div>
+                            <div class="prod-category-tag">${p.category}</div>
+                            <div class="prod-name">${p.name}</div>
+                        </div>
+                        <div class="prod-price">₹${p.price}</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    `).join('');
+}
+
+/* ── Scroll Reveal ── */
+const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+
+/* ── Default load — show all products on page load ── */
+loadProducts('all', null);
+</script>
+
+{% endblock %}

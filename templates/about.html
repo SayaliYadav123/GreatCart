@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- ================= HERO ================= -->
+ 
+<section class="about-section py-5" id="about">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-md-5 reveal">
+                <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=700&q=80" class="about-img" alt="About StyleNest">
+            </div>
+            <div class="col-md-7 reveal" style="transition-delay:.15s">
+                <div class="sec-label">Our Story</div>
+                <h2 class="sec-title mb-4">About StyleNest</h2>
+                <p class="text-muted lh-lg mb-5" style="font-size:.96rem; line-height:1.8">
+                    StyleNest is a modern fashion e-commerce platform focused on quality, trends, and innovation.
+                    We blend style with technology to deliver a seamless shopping experience — from curated drops
+                    to AI-powered try-ons, every detail is designed with you in mind.
+                </p>
+                <div class="d-flex gap-5">
+                    <div><div class="about-stat-n">12K+</div><div class="about-stat-l">Products</div></div>
+                    <div><div class="about-stat-n">50+</div><div class="about-stat-l">Brands</div></div>
+                    <div><div class="about-stat-n">98%</div><div class="about-stat-l">Satisfaction</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+

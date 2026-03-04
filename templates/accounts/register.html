@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+.register-section {
+    min-height: 84vh;
+    background: var(--white, #faf9f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 16px;
+}
+
+.register-card {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,.07);
+    padding: 44px 40px;
+    animation: regFade .5s ease forwards;
+}
+@keyframes regFade {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+.register-brand {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--charcoal, #1a1a1a);
+    margin-bottom: 6px;
+}
+.register-brand span { color: var(--gold, #bfa26a); }
+
+.register-subtitle {
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .75rem;
+    color: var(--muted, #aaa);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+}
+
+.reg-divider {
+    height: 1px;
+    background: rgba(0,0,0,.07);
+    margin: 24px 0;
+}
+
+.reg-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.reg-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.reg-label {
+    font-size: .65rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    color: var(--charcoal, #1a1a1a);
+    margin-bottom: 7px;
+}
+
+/* Style Django form inputs */
+.register-card input[type="text"],
+.register-card input[type="email"],
+.register-card input[type="password"],
+.register-card input[type="tel"] {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid rgba(0,0,0,.12);
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .85rem;
+    color: var(--charcoal, #1a1a1a);
+    background: #fff;
+    transition: border-color .2s;
+    outline: none;
+    box-sizing: border-box;
+}
+.register-card input:focus {
+    border-color: var(--gold, #bfa26a);
+}
+.register-card input::placeholder { color: #ccc; }
+
+/* Error messages */
+.reg-errors {
+    font-size: .72rem;
+    color: #e74c3c;
+    font-family: 'DM Sans', sans-serif;
+    margin-top: 4px;
+}
+.reg-errors ul { margin: 0; padding-left: 14px; }
+
+.register-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--charcoal, #1a1a1a);
+    color: #fff;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .76rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background .25s, transform .15s;
+    margin-top: 8px;
+}
+.register-btn:hover {
+    background: var(--gold, #bfa26a);
+    color: var(--charcoal, #1a1a1a);
+    transform: translateY(-1px);
+}
+.register-btn:active { transform: translateY(0); }
+
+.register-footer {
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .8rem;
+    color: var(--muted, #aaa);
+    margin-top: 24px;
+}
+.register-footer a {
+    color: var(--charcoal, #1a1a1a);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold, #bfa26a);
+    transition: color .2s;
+}
+.register-footer a:hover { color: var(--gold, #bfa26a); }
+
+@media(max-width: 500px) {
+    .register-card { padding: 32px 20px; }
+    .reg-row { grid-template-columns: 1fr; gap: 0; }
+}
+</style>
+
+<section class="register-section">
+<div class="register-card">
+
+    <!-- Brand -->
+    <div class="register-brand">Style<span>Nest</span></div>
+    <div class="register-subtitle">Create your account</div>
+
+    {% include 'includes/alerts.html' %}
+
+    <form action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
+
+        <!-- First & Last name -->
+        <div class="reg-row">
+            <div class="reg-field">
+                <label class="reg-label">First Name</label>
+                {{ form.first_name }}
+            </div>
+            <div class="reg-field">
+                <label class="reg-label">Last Name</label>
+                {{ form.last_name }}
+            </div>
+        </div>
+
+        <!-- Email & Phone -->
+        <div class="reg-row">
+            <div class="reg-field">
+                <label class="reg-label">Email Address</label>
+                {{ form.email }}
+                <div class="reg-errors">{{ form.email.errors }}</div>
+            </div>
+            <div class="reg-field">
+                <label class="reg-label">Phone Number</label>
+                {{ form.phone_number }}
+            </div>
+        </div>
+
+        <!-- Passwords -->
+        <div class="reg-row">
+            <div class="reg-field">
+                <label class="reg-label">Create Password</label>
+                {{ form.password }}
+            </div>
+            <div class="reg-field">
+                <label class="reg-label">Confirm Password</label>
+                {{ form.confirm_password }}
+            </div>
+        </div>
+
+        <!-- Non-field errors -->
+        {% if form.non_field_errors %}
+        <div class="reg-errors" style="margin-bottom:12px;">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <button type="submit" class="register-btn">Create Account</button>
+
+    </form>
+
+    <div class="reg-divider"></div>
+
+    <div class="register-footer">
+        Already have an account? <a href="{% url 'login' %}">Sign in</a>
+    </div>
+
+</div>
+</section>
+
+{% endblock %}

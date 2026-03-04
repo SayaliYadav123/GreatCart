@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ivory:#FAF8F4;--cream:#F2EDE4;--sand:#D6C9B4;--espresso:#2B1F14;--mink:#7A6656;--blush:#C8967A;--gold:#B89B6A;--white:#FFFFFF;--green:#2D6A4F;--font-serif:'Cormorant Garamond',serif;--font-sans:'Jost',sans-serif}
+body{background:var(--ivory);font-family:var(--font-sans);color:var(--espresso);min-height:100vh}
+.sn-topbar{background:var(--espresso);color:var(--sand);text-align:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:10px 0;font-weight:500}
+.sn-header{background:var(--white);border-bottom:1px solid var(--cream);padding:22px 48px;display:flex;align-items:center;justify-content:space-between}
+.sn-logo{font-family:var(--font-serif);font-size:32px;font-weight:300;color:var(--espresso);letter-spacing:.06em;text-decoration:none}
+.sn-logo em{font-style:italic;color:var(--gold)}
+.sn-secure{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mink);letter-spacing:.08em;text-transform:uppercase}
+.sn-page{max-width:860px;margin:0 auto;padding:60px 24px 80px}
+
+/* SUCCESS HERO */
+.sn-success-hero{text-align:center;margin-bottom:52px;animation:fadeUp .6s ease both}
+.sn-check-ring{width:80px;height:80px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;background:rgba(45,106,79,.06);animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) .1s both}
+.sn-check-ring svg{animation:drawCheck .4s ease .4s both}
+.sn-success-tag{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:10px}
+.sn-success-title{font-family:var(--font-serif);font-size:46px;font-weight:300;color:var(--espresso);letter-spacing:.02em;line-height:1.1;margin-bottom:12px}
+.sn-success-title em{font-style:italic;color:var(--mink)}
+.sn-success-sub{font-size:13px;color:var(--mink);letter-spacing:.04em;font-weight:300}
+.sn-shop-btn{display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:13px 32px;background:var(--espresso);color:var(--ivory);font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;transition:background .2s,transform .15s}
+.sn-shop-btn:hover{background:var(--mink);transform:translateY(-1px)}
+
+/* INVOICE */
+.sn-invoice{background:var(--white);border:1px solid var(--cream);animation:fadeUp .6s ease .15s both}
+.sn-inv-head{padding:32px 40px 28px;border-bottom:1px solid var(--cream);display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+@media(max-width:640px){.sn-inv-head{flex-direction:column;padding:24px}.sn-header{padding:18px 20px}}
+.sn-inv-logo img{max-height:36px}
+.sn-inv-logo-txt{font-family:var(--font-serif);font-size:26px;font-weight:300;color:var(--espresso);letter-spacing:.06em}
+.sn-inv-logo-txt em{font-style:italic;color:var(--gold)}
+.sn-inv-to{text-align:right}
+.sn-inv-to-lbl{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px}
+.sn-inv-to-name{font-family:var(--font-serif);font-size:17px;font-weight:400;color:var(--espresso);margin-bottom:4px}
+.sn-inv-to-addr{font-size:13px;color:var(--mink);line-height:1.8;font-weight:300}
+
+/* META STRIP */
+.sn-meta-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid var(--cream)}
+@media(max-width:640px){.sn-meta-strip{grid-template-columns:1fr 1fr}}
+.sn-meta-cell{padding:20px 28px;border-right:1px solid var(--cream)}
+.sn-meta-cell:last-child{border-right:none}
+.sn-meta-lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--sand);font-weight:600;margin-bottom:6px}
+.sn-meta-val{font-size:13px;color:var(--espresso);font-weight:400;letter-spacing:.02em}
+.sn-meta-val.status-completed{color:var(--green);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+
+/* TABLE */
+.sn-inv-table-wrap{padding:0 0 0 0;overflow-x:auto}
+table.sn-table{width:100%;border-collapse:collapse}
+.sn-table thead th{padding:14px 28px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--sand);background:var(--cream);text-align:left}
+.sn-table thead th:last-child{text-align:right}
+.sn-table thead th:nth-child(2){text-align:center}
+.sn-table tbody tr{border-bottom:1px solid var(--cream)}
+.sn-table tbody tr:last-child{border-bottom:none}
+.sn-table tbody td{padding:18px 28px;vertical-align:middle}
+.sn-table tbody td:nth-child(2){text-align:center}
+.sn-table tbody td:last-child{text-align:right}
+.sn-prod-name{font-family:var(--font-serif);font-size:16px;font-weight:400;color:var(--espresso);letter-spacing:.02em;margin-bottom:4px}
+.sn-prod-variant{font-size:11px;color:var(--mink);letter-spacing:.08em;text-transform:uppercase;line-height:1.7}
+.sn-qty-badge{display:inline-block;padding:3px 10px;background:var(--cream);font-size:12px;font-weight:500;color:var(--mink);letter-spacing:.04em}
+.sn-price{font-family:var(--font-serif);font-size:15px;color:var(--espresso);font-weight:500}
+
+/* TFOOT */
+.sn-table tfoot tr td,.sn-table tfoot tr th{padding:12px 28px;border-top:none}
+.sn-tfoot-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mink);font-weight:500;text-align:right}
+.sn-tfoot-val{text-align:right;font-family:var(--font-serif);font-size:15px;color:var(--espresso)}
+.sn-grand-row td,.sn-grand-row th{border-top:2px solid var(--espresso) !important;padding-top:16px !important;padding-bottom:16px !important}
+.sn-grand-lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--espresso);font-weight:700;text-align:right}
+.sn-grand-val{font-family:var(--font-serif);font-size:20px;color:var(--espresso);font-weight:500;text-align:right}
+
+/* FOOTER NOTE */
+.sn-inv-foot{padding:28px 40px;border-top:1px solid var(--cream);text-align:center}
+.sn-inv-foot-txt{font-family:var(--font-serif);font-size:17px;font-style:italic;font-weight:300;color:var(--mink);letter-spacing:.04em}
+.sn-inv-foot-rule{width:48px;height:1px;background:var(--gold);margin:12px auto 0}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+</style>
+
+<div class="sn-topbar">Thank you for your purchase &nbsp;&middot;&nbsp; A confirmation has been sent to your email</div>
+
+<header class="sn-header">
+  <a href="/" class="sn-logo">Style<em>Nest</em></a>
+  <div class="sn-secure">
+    <svg width="13" height="15" viewBox="0 0 13 15" fill="none"><path d="M6.5 0.5L1 2.5V7C1 10.15 3.4 13.1 6.5 14C9.6 13.1 12 10.15 12 7V2.5L6.5 0.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+    Order Confirmed
+  </div>
+</header>
+
+<main class="sn-page">
+
+  <!-- SUCCESS HERO -->
+  <div class="sn-success-hero">
+    <div class="sn-check-ring">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M7 16L13 22L25 10" stroke="#2D6A4F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <p class="sn-success-tag">Payment Successful</p>
+    <h1 class="sn-success-title">Your order is <em>confirmed</em></h1>
+    <p class="sn-success-sub">We&rsquo;re preparing your items and will notify you when they ship.</p>
+    <a href="{% url 'shop' %}" class="sn-shop-btn">Continue Shopping &rarr;</a>
+  </div>
+
+  <!-- INVOICE -->
+  <div class="sn-invoice">
+
+    <!-- Header -->
+    <div class="sn-inv-head">
+      <div class="sn-inv-logo">
+        <div class="sn-inv-logo-txt">Style<em>Nest</em></div>
+      </div>
+      <div class="sn-inv-to">
+        <p class="sn-inv-to-lbl">Invoiced To</p>
+        <p class="sn-inv-to-name">{{order.full_name}}</p>
+        <div class="sn-inv-to-addr">
+          {{order.full_address}}<br>
+          {{order.city}}, {{order.state}}<br>
+          {{order.country}}
+        </div>
+      </div>
+    </div>
+
+    <!-- Meta strip -->
+    <div class="sn-meta-strip">
+      <div class="sn-meta-cell">
+        <div class="sn-meta-lbl">Order Number</div>
+        <div class="sn-meta-val">#{{order_number}}</div>
+      </div>
+      <div class="sn-meta-cell">
+        <div class="sn-meta-lbl">Transaction ID</div>
+        <div class="sn-meta-val">{{transID}}</div>
+      </div>
+      <div class="sn-meta-cell">
+        <div class="sn-meta-lbl">Order Date</div>
+        <div class="sn-meta-val">{{order.created_at}}</div>
+      </div>
+      <div class="sn-meta-cell">
+        <div class="sn-meta-lbl">Status</div>
+        <div class="sn-meta-val status-completed">{{payment.status}}</div>
+      </div>
+    </div>
+
+    <!-- Items table -->
+    <div class="sn-inv-table-wrap">
+      <table class="sn-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th style="text-align:center;width:80px">Qty</th>
+            <th style="text-align:right;width:140px">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in ordered_products %}
+          <tr>
+            <td>
+              <div class="sn-prod-name">{{item.product.product_name}}</div>
+              {% if item.variations.all %}
+              <div class="sn-prod-variant">
+                {% for i in item.variations.all %}
+                {{ i.variation_category|capfirst }}: {{ i.variation_value|capfirst }}<br>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </td>
+            <td style="text-align:center"><span class="sn-qty-badge">{{item.quantity}}</span></td>
+            <td><div class="sn-price">${{item.product_price}} <span style="font-size:11px;font-family:var(--font-sans);color:var(--sand);font-weight:400">USD</span></div></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" class="sn-tfoot-label">Subtotal</td>
+            <td class="sn-tfoot-val">${{subtotal}} <span style="font-size:11px;font-family:var(--font-sans);color:var(--sand)">USD</span></td>
+          </tr>
+          <tr>
+            <td colspan="2" class="sn-tfoot-label">Tax</td>
+            <td class="sn-tfoot-val">${{order.tax}} <span style="font-size:11px;font-family:var(--font-sans);color:var(--sand)">USD</span></td>
+          </tr>
+          <tr class="sn-grand-row">
+            <td colspan="2" class="sn-grand-lbl">Grand Total</td>
+            <td class="sn-grand-val">${{order.order_total}} <span style="font-size:11px;font-family:var(--font-sans);color:var(--mink);font-weight:400">USD</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Footer note -->
+    <div class="sn-inv-foot">
+      <p class="sn-inv-foot-txt">Thank you for shopping with StyleNest.</p>
+      <div class="sn-inv-foot-rule"></div>
+    </div>
+
+  </div><!-- /invoice -->
+</main>
+
+<footer style="border-top:1px solid var(--cream);padding:28px 48px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--sand);letter-spacing:.08em;text-transform:uppercase">
+  <span>&copy; 2025 StyleNest</span>
+  <span><a href="#" style="color:var(--mink);text-decoration:none">Privacy Policy</a> &nbsp;&middot;&nbsp; <a href="#" style="color:var(--mink);text-decoration:none">Terms</a></span>
+  <span>Crafted with care</span>
+</footer>
+
+{% endblock %}

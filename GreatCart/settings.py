@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+# At the very top of settings.py
+from dotenv import load_dotenv
+load_dotenv()
+import os
+print("TNB KEY LOADED:", bool(os.getenv("TNB_API_KEY")))
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,8 +28,11 @@ SECRET_KEY = 'django-insecure-%q&#z6*rh_&9i7db-_!2-y3&kck76s21^u6ym$kjb*3th6+)&9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.ngrok-free.dev",
+]
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ".ngrok-free.dev",]
 
 
 # Application definition
@@ -39,7 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'category',
     'accounts',
-    'store',
+    'carts',
+    'shop',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +75,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 'category.context_processors.menu_links',
+'carts.context_processors.counter',
+'category.context_processors.gender_categories',
+
             ],
         },
     },
@@ -132,3 +144,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=BASE_DIR/'media'
+
+
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+
+}
+
+# SMTP CONFIGURATION
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER='sayaliyadav2122@gmail.com'
+
+EMAIL_HOST_PASSWORD='ojrbmjusaxrianal'
+EMAIL_USE_TLS=True
+import os
+

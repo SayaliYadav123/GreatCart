@@ -1,0 +1,730 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StyleNest — Review & Pay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ivory:     #FAF8F4;
+      --cream:     #F2EDE4;
+      --sand:      #D6C9B4;
+      --espresso:  #2B1F14;
+      --mink:      #7A6656;
+      --blush:     #C8967A;
+      --gold:      #B89B6A;
+      --white:     #FFFFFF;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans:  'Jost', sans-serif;
+    }
+
+    body {
+      background: var(--ivory);
+      font-family: var(--font-sans);
+      color: var(--espresso);
+      min-height: 100vh;
+    }
+
+    /* ── TOP BAR ── */
+    .sn-topbar {
+      background: var(--espresso);
+      color: var(--sand);
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 10px 0;
+      font-family: var(--font-sans);
+      font-weight: 500;
+    }
+
+    /* ── HEADER ── */
+    .sn-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--cream);
+      padding: 22px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sn-logo {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--espresso);
+      letter-spacing: 0.06em;
+      text-decoration: none;
+    }
+    .sn-logo em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .sn-header-steps {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sand);
+      font-weight: 500;
+    }
+    .sn-header-steps .step { color: var(--mink); }
+    .sn-header-steps .step.active { color: var(--espresso); font-weight: 600; }
+    .sn-header-steps .sep { color: var(--sand); }
+    .sn-secure {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--mink);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .sn-secure svg { opacity: 0.6; }
+
+    /* ── PAGE WRAPPER ── */
+    .sn-page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+    .sn-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .sn-title {
+      font-family: var(--font-serif);
+      font-size: 44px;
+      font-weight: 300;
+      text-align: center;
+      color: var(--espresso);
+      letter-spacing: 0.02em;
+      margin-bottom: 52px;
+      line-height: 1.1;
+    }
+    .sn-title em { font-style: italic; color: var(--mink); }
+
+    /* ── GRID ── */
+    .sn-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .sn-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── CARDS ── */
+    .sn-card {
+      background: var(--white);
+      border: 1px solid var(--cream);
+      margin-bottom: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    .sn-card-head {
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--cream);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sn-card-head-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--espresso);
+      color: var(--ivory);
+      font-size: 11px;
+      font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      letter-spacing: 0;
+      flex-shrink: 0;
+    }
+    .sn-card-head-title {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--espresso);
+    }
+    .sn-card-body {
+      padding: 28px;
+    }
+
+    /* ── ADDRESS ── */
+    .sn-address-line {
+      font-size: 14px;
+      color: var(--mink);
+      line-height: 1.9;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+    .sn-address-name {
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 400;
+      color: var(--espresso);
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+    }
+    .sn-note-box {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: var(--cream);
+      border-left: 3px solid var(--gold);
+      font-size: 13px;
+      color: var(--mink);
+      font-style: italic;
+      font-family: var(--font-serif);
+    }
+
+    /* ── PAYMENT METHOD ── */
+    .sn-pay-method {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .sn-pay-icon {
+      width: 52px; height: 32px;
+      background: #003087;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sn-pay-icon svg { width: 36px; }
+    .sn-pay-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--espresso);
+      letter-spacing: 0.04em;
+    }
+    .sn-pay-sub {
+      font-size: 11px;
+      color: var(--mink);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* ── PRODUCT TABLE ── */
+    .sn-items { width: 100%; border-collapse: collapse; }
+    .sn-items thead th {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sand);
+      font-weight: 600;
+      padding: 0 0 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--cream);
+    }
+    .sn-items thead th:last-child { text-align: right; }
+    .sn-items tbody tr {
+      border-bottom: 1px solid var(--cream);
+    }
+    .sn-items tbody tr:last-child { border-bottom: none; }
+    .sn-items tbody td {
+      padding: 20px 0;
+      vertical-align: middle;
+    }
+    .sn-item-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .sn-item-img {
+      width: 72px; height: 88px;
+      object-fit: cover;
+      background: var(--cream);
+      display: block;
+      flex-shrink: 0;
+    }
+    .sn-item-name {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--espresso);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .sn-item-name:hover { color: var(--gold); }
+    .sn-item-variant {
+      font-size: 11px;
+      color: var(--mink);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.7;
+    }
+    .sn-qty {
+      font-size: 14px;
+      color: var(--mink);
+      font-weight: 500;
+      padding-right: 24px;
+    }
+    .sn-price-main {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      color: var(--espresso);
+      font-weight: 500;
+      text-align: right;
+    }
+    .sn-price-each {
+      font-size: 11px;
+      color: var(--sand);
+      text-align: right;
+      letter-spacing: 0.05em;
+      margin-top: 3px;
+    }
+
+    /* ── ORDER SUMMARY CARD ── */
+    .sn-summary-card {
+      background: var(--espresso);
+      border: none;
+      overflow: hidden;
+      position: sticky;
+      top: 28px;
+    }
+    .sn-summary-head {
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sn-summary-head-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--ivory);
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+    }
+    .sn-summary-head-sub {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--sand);
+      opacity: 0.6;
+    }
+    .sn-summary-body { padding: 24px 28px; }
+    .sn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .sn-row-label {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sand);
+      opacity: 0.7;
+    }
+    .sn-row-val {
+      font-size: 14px;
+      color: var(--ivory);
+      font-weight: 400;
+      font-family: var(--font-serif);
+      letter-spacing: 0.02em;
+    }
+    .sn-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin: 20px 0;
+    }
+    .sn-grand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 28px;
+    }
+    .sn-grand-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .sn-grand-val {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      font-weight: 300;
+      color: var(--white);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── PAYPAL CONTAINER ── */
+    #paypal-button-container {
+      min-height: 46px;
+    }
+
+    /* ── TRUST BADGES ── */
+    .sn-trust {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sn-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--sand);
+      opacity: 0.6;
+      letter-spacing: 0.06em;
+    }
+    .sn-trust-item svg { flex-shrink: 0; opacity: 0.7; }
+
+    /* ── DEMO ALERT ── */
+    .sn-demo-alert {
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: rgba(184,155,106,0.12);
+      border: 1px solid rgba(184,155,106,0.3);
+      border-radius: 2px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .sn-demo-alert-icon { flex-shrink: 0; margin-top: 1px; color: var(--gold); }
+    .sn-demo-alert-text {
+      font-size: 12px;
+      color: var(--sand);
+      opacity: 0.75;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+    }
+    .sn-demo-alert-text b { color: var(--gold); font-weight: 600; }
+
+    /* ── PAYMENT LOGOS ── */
+    .sn-payment-logos {
+      margin-top: 18px;
+      text-align: center;
+      opacity: 0.35;
+    }
+    .sn-payment-logos img { height: 22px; }
+
+    /* ── FOOTER ── */
+    .sn-footer {
+      border-top: 1px solid var(--cream);
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--sand);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .sn-footer a { color: var(--mink); text-decoration: none; }
+    .sn-footer a:hover { color: var(--gold); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .sn-card { animation: fadeUp 0.55s ease both; }
+    .sn-card:nth-child(1) { animation-delay: 0.05s; }
+    .sn-card:nth-child(2) { animation-delay: 0.15s; }
+    .sn-card:nth-child(3) { animation-delay: 0.25s; }
+    .sn-summary-card { animation: fadeUp 0.55s ease 0.3s both; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="sn-topbar">Free shipping on orders over $150 &nbsp;·&nbsp; Easy returns within 30 days</div>
+
+  <!-- HEADER -->
+  <header class="sn-header">
+    <a href="/" class="sn-logo">Style<em>Nest</em></a>
+    <div class="sn-header-steps">
+      <span class="step">Cart</span>
+      <span class="sep">›</span>
+      <span class="step">Details</span>
+      <span class="sep">›</span>
+      <span class="step active">Review &amp; Pay</span>
+    </div>
+    <div class="sn-secure">
+      <svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6.5 0.5L1 2.5V7C1 10.15 3.4 13.1 6.5 14C9.6 13.1 12 10.15 12 7V2.5L6.5 0.5Z" stroke="currentColor" stroke-width="1.2" fill="none"/>
+      </svg>
+      Secure Checkout
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="sn-page">
+    <p class="sn-eyebrow">Step 3 of 3</p>
+    <h1 class="sn-title">Review Your Order &amp; <em>Make Payment</em></h1>
+
+    <div class="sn-grid">
+      <!-- LEFT COLUMN -->
+      <div>
+
+        <!-- Billing Address -->
+        <div class="sn-card">
+          <div class="sn-card-head">
+            <div class="sn-card-head-num">1</div>
+            <span class="sn-card-head-title">Billing Address</span>
+          </div>
+          <div class="sn-card-body">
+            <p class="sn-address-name">{{order.full_name}}</p>
+            <p class="sn-address-line">{{order.full_address}}</p>
+            <p class="sn-address-line">{{order.city}}, {{order.state}}</p>
+            <p class="sn-address-line">{{order.country}}</p>
+            <p class="sn-address-line">{{order.email}}</p>
+            <p class="sn-address-line">{{order.phone}}</p>
+            {% if order.order_note %}
+            <div class="sn-note-box">
+              <strong>Order Note:</strong> {{order.order_note}}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="sn-card">
+          <div class="sn-card-head">
+            <div class="sn-card-head-num">2</div>
+            <span class="sn-card-head-title">Payment Method</span>
+          </div>
+          <div class="sn-card-body">
+            <div class="sn-pay-method">
+              <div class="sn-pay-icon">
+                <!-- PayPal logo SVG simplified -->
+                <svg viewBox="0 0 80 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <text x="2" y="17" font-family="Arial" font-size="14" font-weight="bold" fill="#009cde">Pay</text>
+                  <text x="30" y="17" font-family="Arial" font-size="14" font-weight="bold" fill="#ffffff">Pal</text>
+                </svg>
+              </div>
+              <div>
+                <div class="sn-pay-label">PayPal</div>
+                <div class="sn-pay-sub">Secure payment gateway</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Products -->
+        <div class="sn-card">
+          <div class="sn-card-head">
+            <div class="sn-card-head-num">3</div>
+            <span class="sn-card-head-title">Review Products</span>
+          </div>
+          <div class="sn-card-body">
+            <table class="sn-items">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th style="width:90px">Qty</th>
+                  <th style="width:120px; text-align:right">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for cart_item in cart_items %}
+                <tr>
+                  <td>
+                    <div class="sn-item-wrap">
+                      <img src="{{ cart_item.product.images.url }}" class="sn-item-img" alt="{{ cart_item.product.product_name }}"/>
+                      <div>
+                        <a href="{{ cart_item.product.get_url }}" class="sn-item-name">{{ cart_item.product.product_name }}</a>
+                        {% if cart_item.variations.all %}
+                        <div class="sn-item-variant">
+                          {% for item in cart_item.variations.all %}
+                          {{ item.variation_category | capfirst }}: {{ item.variation_value | capfirst }}<br>
+                          {% endfor %}
+                        </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </td>
+                  <td class="sn-qty">× {{cart_item.quantity}}</td>
+                  <td>
+                    <div class="sn-price-main">$ {{ cart_item.sub_total }}</div>
+                    <div class="sn-price-each">$ {{ cart_item.product.price }} each</div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /left -->
+
+      <!-- RIGHT COLUMN: ORDER SUMMARY -->
+      <div>
+        <div class="sn-card sn-summary-card">
+          <div class="sn-summary-head">
+            <div class="sn-summary-head-title">Order Summary</div>
+            <div class="sn-summary-head-sub">Review before payment</div>
+          </div>
+          <div class="sn-summary-body">
+
+            <div class="sn-row">
+              <span class="sn-row-label">Subtotal</span>
+              <span class="sn-row-val">$ {{total}}</span>
+            </div>
+            <div class="sn-row">
+              <span class="sn-row-label">Tax</span>
+              <span class="sn-row-val">$ {{tax}}</span>
+            </div>
+            <div class="sn-row">
+              <span class="sn-row-label">Shipping</span>
+              <span class="sn-row-val" style="color: #B89B6A; font-size:13px; font-family: var(--font-sans); letter-spacing:0.1em; text-transform:uppercase;">Free</span>
+            </div>
+
+            <hr class="sn-divider"/>
+
+            <div class="sn-grand-row">
+              <span class="sn-grand-label">Grand Total</span>
+              <span class="sn-grand-val">$ {{grand_total}}</span>
+            </div>
+
+            <!-- PayPal Button -->
+            <div id="paypal-button-container"></div>
+
+            <!-- Trust items -->
+            <div class="sn-trust">
+              <div class="sn-trust-item">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L2 3V7.5C2 10.2 4.2 12.7 7 13.5C9.8 12.7 12 10.2 12 7.5V3L7 1Z" stroke="currentColor" stroke-width="1.2"/></svg>
+                256-bit SSL encryption
+              </div>
+              <div class="sn-trust-item">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 7L6.5 8.5L9 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                Money-back guarantee
+              </div>
+              <div class="sn-trust-item">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5h10M2 9h6M5 12l2-10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                Free returns within 30 days
+              </div>
+            </div>
+
+            <!-- Demo alert -->
+            <div class="sn-demo-alert">
+              <div class="sn-demo-alert-icon">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#B89B6A" stroke-width="1.2"/><path d="M7 5v3M7 9.5v.5" stroke="#B89B6A" stroke-width="1.2" stroke-linecap="round"/></svg>
+              </div>
+              <p class="sn-demo-alert-text"><b>Demo site.</b> This is a demo website — please do not attempt real payments.</p>
+            </div>
+
+            <!-- Payment logos -->
+            <div class="sn-payment-logos">
+              <img src="{% static './images/misc/payments.png' %}" alt="Accepted payments"/>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /right -->
+
+    </div><!-- /grid -->
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="sn-footer">
+    <span>© 2025 StyleNest</span>
+    <span>
+      <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+      <a href="#">Terms of Service</a> &nbsp;·&nbsp;
+      <a href="#">Contact</a>
+    </span>
+    <span>Crafted with care</span>
+  </footer>
+
+</body>
+</html>
+
+<!-- PayPal SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=AV6bk5PxgLcL3jU4AlK_h-q5Hinig9180ROrc0ClESmrkuarnrg2HKyThc4-9QGwQPrIPVyDf9P3eW92&currency=USD"></script>
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  var amount        = "{{ grand_total }}";
+  var url           = "{% url 'payments' %}";
+  var csrftoken     = getCookie('csrftoken');
+  var orderID       = "{{ order.order_number }}";
+  var payment_method = 'PayPal';
+  var redirect_url  = "{% url 'order_complete' %}";
+
+  paypal.Buttons({
+    style: { color: 'gold', shape: 'rect', label: 'pay', height: 46 },
+
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{ amount: { value: amount } }]
+      });
+    },
+
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        console.log(details);
+        sendData();
+				function sendData(){
+					fetch(url, {
+						method : "POST",
+						headers: {
+							"Content-type": "application/json",
+							"X-CSRFToken": csrftoken,
+						},
+						body: JSON.stringify({
+							orderID: orderID,
+							transID: details.id,
+							payment_method: payment_method,
+							status: details.status,
+						}),
+					})
+				  .then((response) => response.json())
+				  .then((data) => {
+						window.location.href = redirect_url + '?order_number='+data.order_number+'&payment_id='+data.transID;
+					});
+				}
+        fetch(url, {
+          method: "POST",
+          headers: { "Content-type": "application/json", "X-CSRFToken": csrftoken },
+          body: JSON.stringify({
+            orderID: orderID,
+            transID: details.id,
+            payment_method: payment_method,
+            status: details.status,
+          }),
+        })
+        .then(r => r.json())
+        .then(d => {
+          window.location.href = redirect_url + '?order_number=' + d.order_number + '&payment_id=' + d.transID;
+        });
+      });
+    }
+  }).render('#paypal-button-container');
+</script>
+
+{% endblock %}
