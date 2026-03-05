@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from pathlib import Path
+from decouple import config
 from pathlib import Path
 # At the very top of settings.py
 from dotenv import load_dotenv
@@ -24,10 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%q&#z6*rh_&9i7db-_!2-y3&kck76s21^u6ym$kjb*3th6+)&9'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = config('SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = config('DEBUG', default=True, cast=bool)
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.dev",
 ]
@@ -77,6 +81,7 @@ TEMPLATES = [
 'category.context_processors.menu_links',
 'carts.context_processors.counter',
 'category.context_processors.gender_categories',
+'accounts.context_processors.user_profile',
 
             ],
         },
@@ -156,10 +161,13 @@ MESSAGE_TAGS = {
 # SMTP CONFIGURATION
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS=True
+
+# SMTP configuration
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+
 import os
 

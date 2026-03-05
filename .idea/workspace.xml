@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3feabd80-7632-4d24-bf76-49e4b8d69e38" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/photos/categories/2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/photos/categories/jackets.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/photos/categories/jeans.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/photos/categories/shirts.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/photos/categories/shoes.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/photos/categories/tshirts.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/tryon_results/tryon_result.JPEG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/tryon_results/tryon_result.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orders/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/orders/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/accounts/account_verification_email.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/accounts/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/accounts/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/includes/alerts.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/orders/payments.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/store/checkout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GreatCart/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/GreatCart/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GreatCart/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/GreatCart/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GreatCart/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/GreatCart/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/carts/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/carts/context_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/carts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/carts/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/category/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/category/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/category/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/category/context_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/category/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/category/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/includes/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/includes/footer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/includes/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/includes/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/store/product_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/store/product_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/store/store.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/store/store.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="3966ucrXId6uszvVgMG5PG85TjB" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/GreatCartContinue/GreatKart/GreatCart&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-0e3be3396995-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.23339.19" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3feabd80-7632-4d24-bf76-49e4b8d69e38" name="Changes" comment="" />
+      <created>1770004397565</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770004397565</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/store/utils/api4ai.py</url>
+          <line>82</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

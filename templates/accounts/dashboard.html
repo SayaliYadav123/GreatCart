@@ -1,447 +1,489 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
 <style>
-.dash-section {
-    background: var(--white, #faf9f7);
-    padding: 56px 0 80px;
-    min-height: 84vh;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Sidebar ── */
-.dash-sidebar {
-    position: sticky;
-    top: 90px;
-}
+  :root {
+    --ivory:     #FAF8F4;
+    --cream:     #F2EDE4;
+    --sand:      #D6C9B4;
+    --espresso:  #2B1F14;
+    --mink:      #7A6656;
+    --blush:     #C8967A;
+    --gold:      #B89B6A;
+    --white:     #FFFFFF;
+    --font-serif: 'Cormorant Garamond', serif;
+    --font-sans:  'Jost', sans-serif;
+  }
 
-.dash-user-card {
-    background: var(--charcoal, #1a1a1a);
-    border-radius: 6px;
-    padding: 24px 20px;
+  .sn-dashboard {
+    background: var(--ivory);
+    font-family: var(--font-sans);
+    color: var(--espresso);
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* ── TOP BAR ── */
+  .sn-topbar {
+    background: var(--espresso);
+    color: var(--sand);
     text-align: center;
-    margin-bottom: 12px;
-}
-.dash-user-avatar {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--gold, #bfa26a);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: var(--charcoal, #1a1a1a);
-    font-weight: 700;
-    margin: 0 auto 12px;
-}
-.dash-user-name {
-    font-family: 'Playfair Display', serif;
-    font-size: .95rem;
-    color: #fff;
-    font-weight: 600;
-    margin-bottom: 3px;
-}
-.dash-user-email {
-    font-family: 'DM Sans', sans-serif;
-    font-size: .68rem;
-    color: rgba(255,255,255,.4);
-}
-
-.dash-nav {
-    background: #fff;
-    border-radius: 6px;
-    border: 1px solid rgba(0,0,0,.07);
-    overflow: hidden;
-    margin-bottom: 12px;
-}
-.dash-nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 13px 18px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .78rem;
-    font-weight: 500;
-    color: #888;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0,0,0,.05);
-    transition: all .2s;
-    letter-spacing: .04em;
-}
-.dash-nav-item:last-child { border-bottom: none; }
-.dash-nav-item:hover { background: #fafaf9; color: var(--charcoal, #1a1a1a); }
-.dash-nav-item.active {
-    color: var(--gold, #bfa26a);
-    background: #fdfcf8;
-    font-weight: 700;
-    border-left: 3px solid var(--gold, #bfa26a);
-}
-.dash-nav-item i { font-size: .85rem; width: 16px; }
-
-.dash-logout {
-    width: 100%;
-    padding: 12px;
-    background: transparent;
-    color: #999;
-    border: 1.5px solid rgba(0,0,0,.1);
-    font-family: 'DM Sans', sans-serif;
-    font-size: .72rem;
-    letter-spacing: .14em;
+    font-size: 11px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all .2s;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.dash-logout:hover { border-color: #e74c3c; color: #e74c3c; }
+    padding: 10px 0;
+    font-weight: 500;
+  }
 
-/* ── Main content ── */
-.dash-card {
-    background: #fff;
-    border-radius: 6px;
-    border: 1px solid rgba(0,0,0,.07);
-    overflow: hidden;
-    margin-bottom: 20px;
-    animation: dashFade .45s ease forwards;
-}
-@keyframes dashFade {
-    from { opacity:0; transform:translateY(14px); }
-    to   { opacity:1; transform:translateY(0); }
-}
-
-.dash-card-header {
-    padding: 18px 24px;
-    border-bottom: 1px solid rgba(0,0,0,.06);
+  /* ── HEADER ── */
+  .sn-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--cream);
+    padding: 22px 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-    background: #fafaf9;
-}
-.dash-order-id {
-    font-family: 'DM Sans', sans-serif;
-    font-size: .78rem;
-    font-weight: 700;
-    color: var(--charcoal, #1a1a1a);
-    letter-spacing: .06em;
-}
-.dash-order-date {
-    font-family: 'DM Sans', sans-serif;
-    font-size: .72rem;
-    color: var(--muted, #aaa);
-}
-.dash-status {
-    font-size: .62rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-    background: rgba(191,162,106,.12);
-    color: var(--gold, #bfa26a);
-}
+  }
+  .sn-logo {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--espresso);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+  }
+  .sn-logo em { font-style: italic; color: var(--gold); }
 
-/* Delivery info */
-.dash-delivery {
-    padding: 20px 24px;
-    border-bottom: 1px solid rgba(0,0,0,.05);
-}
-.dash-delivery-grid {
+  .sn-header-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sand);
+    font-weight: 500;
+  }
+  .sn-header-nav .sep { color: var(--sand); }
+  .sn-header-nav .active { color: var(--espresso); font-weight: 600; }
+
+  /* ── PAGE WRAPPER ── */
+  .sn-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 52px 24px 0;
+  }
+
+  .sn-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .sn-page-title {
+    font-family: var(--font-serif);
+    font-size: 38px;
+    font-weight: 300;
+    color: var(--espresso);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin-bottom: 40px;
+  }
+  .sn-page-title em { font-style: italic; color: var(--mink); }
+
+  /* ── LAYOUT ── */
+  .sn-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .sn-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ── SIDEBAR ── */
+  .sn-sidebar {
+    position: sticky;
+    top: 28px;
+    animation: fadeUp 0.5s ease 0.05s both;
+  }
+
+  .sn-sidebar-profile {
+    background: var(--espresso);
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .sn-avatar-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .sn-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--gold);
+    display: block;
+  }
+  .sn-avatar-ring {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1px solid rgba(184,155,106,0.3);
+  }
+  .sn-sidebar-name {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ivory);
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+  }
+  .sn-sidebar-email {
+    font-size: 11px;
+    color: var(--sand);
+    opacity: 0.6;
+    letter-spacing: 0.06em;
+  }
+
+  .sn-sidebar-nav {
+    background: var(--white);
+    border: 1px solid var(--cream);
+    border-top: none;
+    overflow: hidden;
+  }
+  .sn-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--cream);
+    transition: background 0.15s, color 0.15s, padding-left 0.15s;
+  }
+  .sn-nav-item:last-child { border-bottom: none; }
+  .sn-nav-item svg { flex-shrink: 0; opacity: 0.5; }
+  .sn-nav-item:hover {
+    background: var(--cream);
+    color: var(--espresso);
+    padding-left: 26px;
+  }
+  .sn-nav-item:hover svg { opacity: 1; }
+  .sn-nav-item.active {
+    background: var(--cream);
+    color: var(--espresso);
+    border-left: 3px solid var(--gold);
+    padding-left: 17px;
+  }
+  .sn-nav-item.active svg { opacity: 1; }
+
+  /* ── MAIN CONTENT ── */
+  .sn-main { animation: fadeUp 0.5s ease 0.15s both; }
+
+  /* Alerts */
+  .sn-alerts { margin-bottom: 24px; }
+
+  /* Welcome banner */
+  .sn-welcome {
+    background: var(--white);
+    border: 1px solid var(--cream);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .sn-welcome-text { font-size: 13px; color: var(--mink); letter-spacing: 0.04em; }
+  .sn-welcome-name {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--espresso);
+    letter-spacing: 0.03em;
+    margin-top: 4px;
+  }
+  .sn-welcome-badge {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(184,155,106,0.1);
+    border: 1px solid rgba(184,155,106,0.25);
+    padding: 6px 14px;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  /* ── STAT CARDS ── */
+  .sn-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-}
-.dash-info-label {
-    font-size: .62rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 700;
-    color: var(--muted, #aaa);
-    margin-bottom: 8px;
-}
-.dash-info-text {
-    font-family: 'DM Sans', sans-serif;
-    font-size: .82rem;
-    color: var(--charcoal, #1a1a1a);
-    line-height: 1.7;
-}
-.dash-total {
-    font-weight: 700;
-    color: var(--charcoal, #1a1a1a);
-}
-
-/* Order items table */
-.dash-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'DM Sans', sans-serif;
-}
-.dash-table thead th {
-    font-size: .6rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: #bbb;
-    font-weight: 700;
-    padding: 12px 24px;
-    border-bottom: 1px solid rgba(0,0,0,.06);
-    background: #fafaf9;
-    text-align: left;
-}
-.dash-table tbody tr {
-    border-bottom: 1px solid rgba(0,0,0,.04);
-    transition: background .15s;
-}
-.dash-table tbody tr:last-child { border-bottom: none; }
-.dash-table tbody tr:hover { background: #fafaf9; }
-.dash-table td {
-    padding: 16px 24px;
-    vertical-align: middle;
-}
-
-.dash-item-img {
-    width: 52px;
-    height: 52px;
-    object-fit: cover;
-    border-radius: 4px;
-    background: #f2f1ee;
-}
-.dash-item-name {
-    font-size: .84rem;
-    font-weight: 600;
-    color: var(--charcoal, #1a1a1a);
-    margin-bottom: 2px;
-}
-.dash-item-price {
-    font-size: .74rem;
-    color: var(--muted, #aaa);
-}
-.dash-item-seller {
-    font-size: .76rem;
-    color: #888;
-    line-height: 1.5;
-}
-
-.dash-btn-track {
-    padding: 7px 14px;
-    background: transparent;
-    border: 1.5px solid var(--charcoal, #1a1a1a);
-    color: var(--charcoal, #1a1a1a);
-    font-family: 'DM Sans', sans-serif;
-    font-size: .68rem;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: all .2s;
-    text-decoration: none;
-    margin-right: 6px;
-}
-.dash-btn-track:hover {
-    background: var(--charcoal, #1a1a1a);
-    color: #fff;
-}
-.dash-btn-details {
-    padding: 7px 14px;
-    background: rgba(0,0,0,.04);
-    border: none;
-    color: #888;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .68rem;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: all .2s;
-    text-decoration: none;
-}
-.dash-btn-details:hover { background: rgba(0,0,0,.08); color: var(--charcoal, #1a1a1a); }
-
-/* Page title */
-.dash-page-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--charcoal, #1a1a1a);
     margin-bottom: 24px;
-}
+  }
+  @media (max-width: 560px) {
+    .sn-stats { grid-template-columns: 1fr; }
+  }
 
-@media(max-width: 768px) {
-    .dash-section { padding: 28px 0 56px; }
-    .dash-sidebar { position: static; margin-bottom: 24px; }
-    .dash-delivery-grid { grid-template-columns: 1fr; gap: 12px; }
-    .dash-table thead { display: none; }
-    .dash-table td { padding: 12px 16px; }
-}
+  .sn-stat-card {
+    background: var(--white);
+    border: 1px solid var(--cream);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .sn-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(43,31,20,0.07);
+  }
+  .sn-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--gold);
+  }
+  .sn-stat-label {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sand);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .sn-stat-value {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--espresso);
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  .sn-stat-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    transition: gap 0.15s;
+  }
+  .sn-stat-link:hover { gap: 10px; }
+  .sn-stat-icon {
+    position: absolute;
+    bottom: 20px; right: 24px;
+    opacity: 0.05;
+  }
+
+  /* ── PROFILE INFO CARD ── */
+  .sn-info-card {
+    background: var(--white);
+    border: 1px solid var(--cream);
+    overflow: hidden;
+  }
+  .sn-info-head {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sn-info-head-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--espresso);
+    color: var(--ivory);
+    font-size: 10px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sn-info-head-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--espresso);
+  }
+  .sn-info-body { padding: 24px; }
+  .sn-info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cream);
+  }
+  .sn-info-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .sn-info-icon { opacity: 0.35; flex-shrink: 0; }
+  .sn-info-detail-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sand);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .sn-info-detail-val {
+    font-size: 14px;
+    color: var(--espresso);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── FOOTER ── */
+  .sn-footer {
+    border-top: 1px solid var(--cream);
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--sand);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 60px;
+  }
+  .sn-footer a { color: var(--mink); text-decoration: none; }
+  .sn-footer a:hover { color: var(--gold); }
 </style>
 
-<section class="dash-section">
-<div class="container">
+<div class="sn-dashboard">
 
+  <!-- TOP BAR -->
+  <div class="sn-topbar">Free shipping on orders over ₹1500 &nbsp;·&nbsp; Easy returns within 30 days</div>
+
+  <!-- HEADER -->
+  <header class="sn-header">
+    <a href="/" class="sn-logo">Style<em>Nest</em></a>
+    <div class="sn-header-nav">
+      <span>Home</span>
+      <span class="sep">›</span>
+      <span class="active">My Account</span>
+    </div>
+    <div style="font-size:11px; color:var(--mink); letter-spacing:0.08em; text-transform:uppercase;">
+      Welcome back
+    </div>
+  </header>
+
+  <!-- PAGE -->
+  <div class="sn-page">
     {% include 'includes/alerts.html' %}
 
-    <div class="row">
+    <p class="sn-eyebrow">Member Area</p>
+    <h1 class="sn-page-title">My <em>Dashboard</em></h1>
 
-        <!-- ── Sidebar ── -->
-        <aside class="col-md-3">
-            <div class="dash-sidebar">
+    <div class="sn-layout">
 
-                <!-- User card -->
-                <div class="dash-user-card">
-                    <div class="dash-user-avatar">
-                        {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
-                    </div>
-                    <div class="dash-user-name">
-                        {{ request.user.get_full_name|default:request.user.username }}
-                    </div>
-                    <div class="dash-user-email">{{ request.user.email }}</div>
-                </div>
+      {%include 'includes/dashboard_sidebar.html'%}
+      <!-- ── MAIN ── -->
+      <main class="sn-main">
 
-                <!-- Nav -->
-                <nav class="dash-nav">
-                    <a href="#" class="dash-nav-item active">
-                        <i class="bi bi-bag"></i> Order History
-                    </a>
-                    <a href="#" class="dash-nav-item">
-                        <i class="bi bi-credit-card"></i> Transactions
-                    </a>
-                    <a href="#" class="dash-nav-item">
-                        <i class="bi bi-arrow-return-left"></i> Returns & Refunds
-                    </a>
-                    <a href="#" class="dash-nav-item">
-                        <i class="bi bi-gear"></i> Settings
-                    </a>
-                </nav>
+        <!-- Welcome Banner -->
+        <div class="sn-welcome">
+          <div>
+            <div class="sn-welcome-text">Logged in as</div>
+            <div class="sn-welcome-name">{{ user.full_name }}</div>
+          </div>
+          <div class="sn-welcome-badge">Member</div>
+        </div>
 
-                <!-- Logout -->
-                <a href="{% url 'logout' %}" class="dash-logout">
-                    <i class="bi bi-box-arrow-right"></i> Sign Out
-                </a>
+        <!-- Stats -->
+        <div class="sn-stats">
 
+          <div class="sn-stat-card">
+            <div class="sn-stat-label">Total Orders</div>
+            <div class="sn-stat-value">{{ orders_count }}</div>
+            <a href="{% url 'my_orders' %}" class="sn-stat-link">
+              View all orders
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5.5 2.5L8 5l-2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <div class="sn-stat-icon">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none"><rect x="10" y="8" width="60" height="70" rx="6" stroke="currentColor" stroke-width="3"/><path d="M25 30h30M25 42h20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
             </div>
-        </aside>
+          </div>
 
-        <!-- ── Main ── -->
-        <main class="col-md-9">
-
-            <div class="dash-page-title">Order History</div>
-
-            <!-- Order Card -->
-            <div class="dash-card">
-
-                <div class="dash-card-header">
-                    <div>
-                        <div class="dash-order-id">Order #6123456789</div>
-                        <div class="dash-order-date">16 December 2018</div>
-                    </div>
-                    <span class="dash-status">Processing</span>
-                </div>
-
-                <!-- Delivery & Payment info -->
-                <div class="dash-delivery">
-                    <div class="dash-delivery-grid">
-                        <div>
-                            <div class="dash-info-label">Delivery To</div>
-                            <div class="dash-info-text">
-                                Michael Jackson<br>
-                                +1234567890 · myname@pixsellz.com<br>
-                                Home number, Building name,<br>
-                                Street 123, Tashkent, UZB
-                            </div>
-                        </div>
-                        <div>
-                            <div class="dash-info-label">Payment</div>
-                            <div class="dash-info-text">
-                                <i class="bi bi-credit-card me-1"></i> Visa **** 4216<br><br>
-                                Subtotal: ₹356<br>
-                                Shipping: ₹56<br>
-                                <span class="dash-total">Total: ₹456</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Items table -->
-                <table class="dash-table">
-                    <thead>
-                        <tr>
-                            <th colspan="2">Product</th>
-                            <th>Seller</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="width:70px">
-                                <img src="../images/items/1.jpg"
-                                     class="dash-item-img" alt="Product">
-                            </td>
-                            <td>
-                                <div class="dash-item-name">Product name goes here</div>
-                                <div class="dash-item-price">₹145</div>
-                            </td>
-                            <td>
-                                <div class="dash-item-seller">Nike Clothing</div>
-                            </td>
-                            <td>
-                                <a href="#" class="dash-btn-track">Track</a>
-                                <a href="#" class="dash-btn-details">Details</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img src="../images/items/2.jpg"
-                                     class="dash-item-img" alt="Product">
-                            </td>
-                            <td>
-                                <div class="dash-item-name">Another product name</div>
-                                <div class="dash-item-price">₹15</div>
-                            </td>
-                            <td>
-                                <div class="dash-item-seller">ABC Shop</div>
-                            </td>
-                            <td>
-                                <a href="#" class="dash-btn-track">Track</a>
-                                <a href="#" class="dash-btn-details">Details</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img src="../images/items/3.jpg"
-                                     class="dash-item-img" alt="Product">
-                            </td>
-                            <td>
-                                <div class="dash-item-name">The name of the product</div>
-                                <div class="dash-item-price">₹145</div>
-                            </td>
-                            <td>
-                                <div class="dash-item-seller">Walmart</div>
-                            </td>
-                            <td>
-                                <a href="#" class="dash-btn-track">Track</a>
-                                <a href="#" class="dash-btn-details">Details</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
+          <div class="sn-stat-card">
+            <div class="sn-stat-label">Account Status</div>
+            <div class="sn-stat-value" style="font-size:32px; margin-top:6px; letter-spacing:0.01em;">Active</div>
+            <a href="{% url 'edit_profile' %}" class="sn-stat-link">
+              Manage profile
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5.5 2.5L8 5l-2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <div class="sn-stat-icon">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="28" r="18" stroke="currentColor" stroke-width="3"/><path d="M10 70c0-16.6 13.4-30 30-30s30 13.4 30 30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
             </div>
-            <!-- /Order Card -->
+          </div>
 
-        </main>
+        </div>
 
+        <!-- Contact Info -->
+        <div class="sn-info-card">
+          <div class="sn-info-head">
+            <div class="sn-info-head-num">i</div>
+            <span class="sn-info-head-title">Contact Information</span>
+          </div>
+          <div class="sn-info-body">
+            <div class="sn-info-row">
+              <div class="sn-info-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" stroke-width="1.2"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <div class="sn-info-detail-label">Email Address</div>
+                <div class="sn-info-detail-val">{{ user.email }}</div>
+              </div>
+            </div>
+            <div class="sn-info-row">
+              <div class="sn-info-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 2h3l1.5 3.5-1.5 1a8 8 0 004 4l1-1.5L14.5 10V13A1.5 1.5 0 0113 14.5C6.1 14.5 1.5 9.9 1.5 3A1.5 1.5 0 013 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <div class="sn-info-detail-label">Phone Number</div>
+                <div class="sn-info-detail-val">{{ user.phone_number }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
     </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="sn-footer">
+    <span>© 2025 StyleNest</span>
+    <span>
+      <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+      <a href="#">Terms of Service</a> &nbsp;·&nbsp;
+      <a href="#">Contact</a>
+    </span>
+    <span>Crafted with care</span>
+  </footer>
+
 </div>
-</section>
 
 {% endblock %}

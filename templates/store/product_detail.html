@@ -3,9 +3,6 @@
 {% block content %}
 
 <style>
-/* ═══════════════════════════════════════
-   PRODUCT DETAIL PAGE
-═══════════════════════════════════════ */
 .pd-section {
     background: var(--white, #faf9f7);
     padding: 56px 0 80px;
@@ -21,223 +18,153 @@
     margin-bottom: 44px;
     font-family: 'DM Sans', sans-serif;
 }
-.pd-breadcrumb a {
-    color: var(--muted, #999);
-    text-decoration: none;
-    transition: color .2s;
-}
+.pd-breadcrumb a { color: var(--muted, #999); text-decoration: none; transition: color .2s; }
 .pd-breadcrumb a:hover { color: var(--charcoal, #1a1a1a); }
 .pd-breadcrumb span { margin: 0 8px; opacity: .5; }
 
-/* Image side */
+/* Image panel */
 .pd-img-panel { position: sticky; top: 90px; }
 
+/* ── MAIN IMAGE ── */
 .pd-img-wrap {
     position: relative;
     overflow: hidden;
     border-radius: 6px;
     background: #f2f1ee;
-    height: 560px;
+    height: 520px;
 }
 .pd-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center top;
     display: block;
     transition: transform .6s ease;
 }
 .pd-img-wrap:hover img { transform: scale(1.04); }
 
 .pd-badge {
-    position: absolute;
-    top: 16px; left: 16px;
-    font-size: .62rem;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 700;
-    z-index: 2;
-    border-radius: 2px;
+    position: absolute; top: 16px; left: 16px;
+    font-size: .62rem; letter-spacing: .15em; text-transform: uppercase;
+    padding: 5px 12px; font-family: 'DM Sans', sans-serif;
+    font-weight: 700; z-index: 2; border-radius: 2px;
 }
-.pd-badge-new  { background: var(--charcoal, #1a1a1a); color: #fff; }
-.pd-badge-low  { background: #e67e22; color: #fff; }
-.pd-badge-out  { background: #dc3545; color: #fff; }
+.pd-badge-new { background: var(--charcoal, #1a1a1a); color: #fff; }
+.pd-badge-low { background: #e67e22; color: #fff; }
+.pd-badge-out { background: #dc3545; color: #fff; }
+
+/* ── THUMBNAIL GALLERY ── */
+.pd-thumbs {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 4px 2px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d6c9b4 transparent;
+}
+.pd-thumbs::-webkit-scrollbar { height: 4px; }
+.pd-thumbs::-webkit-scrollbar-track { background: transparent; }
+.pd-thumbs::-webkit-scrollbar-thumb { background: #d6c9b4; border-radius: 2px; }
+
+.pd-thumb {
+    flex-shrink: 0;
+    width: 72px; height: 88px;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+    background: #f2f1ee;
+}
+.pd-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center top;
+    display: block;
+    transition: transform .3s;
+}
+.pd-thumb:hover {
+    border-color: #bfa26a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.pd-thumb:hover img { transform: scale(1.06); }
+.pd-thumb.active {
+    border-color: #bfa26a;
+    box-shadow: 0 0 0 1px #bfa26a;
+}
 
 /* Info side */
-.pd-info {
-    padding-left: 52px;
-    display: flex;
-    flex-direction: column;
-}
-
+.pd-info { padding-left: 52px; display: flex; flex-direction: column; }
 .pd-category-tag {
-    font-size: .68rem;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--gold, #bfa26a);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    margin-bottom: 10px;
+    font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--gold, #bfa26a); font-family: 'DM Sans', sans-serif;
+    font-weight: 600; margin-bottom: 10px;
 }
-
 .pd-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.1rem;
-    font-weight: 700;
-    color: var(--charcoal, #1a1a1a);
-    line-height: 1.2;
-    margin-bottom: 14px;
+    font-family: 'Playfair Display', serif; font-size: 2.1rem;
+    font-weight: 700; color: var(--charcoal, #1a1a1a);
+    line-height: 1.2; margin-bottom: 14px;
 }
-
 .pd-price {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1.55rem;
-    font-weight: 700;
-    color: var(--charcoal, #1a1a1a);
-    letter-spacing: -.02em;
+    font-family: 'DM Sans', sans-serif; font-size: 1.55rem;
+    font-weight: 700; color: var(--charcoal, #1a1a1a); letter-spacing: -.02em;
 }
+.pd-divider { height: 1px; background: rgba(0,0,0,.08); margin: 22px 0; }
+.pd-desc { font-family: 'DM Sans', sans-serif; font-size: .87rem; line-height: 1.85; color: #888; }
 
-.pd-divider {
-    height: 1px;
-    background: rgba(0,0,0,.08);
-    margin: 22px 0;
-}
-
-.pd-desc {
-    font-family: 'DM Sans', sans-serif;
-    font-size: .87rem;
-    line-height: 1.85;
-    color: #888;
-}
-
-/* Select fields */
 .pd-field-label {
-    display: block;
-    font-size: .66rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 700;
-    color: var(--charcoal, #1a1a1a);
-    margin-bottom: 7px;
+    display: block; font-size: .66rem; letter-spacing: .14em;
+    text-transform: uppercase; font-family: 'DM Sans', sans-serif;
+    font-weight: 700; color: var(--charcoal, #1a1a1a); margin-bottom: 7px;
 }
-
 .pd-select {
-    width: 100%;
-    padding: 11px 16px;
-    border: 1.5px solid rgba(0,0,0,.13);
-    border-radius: 4px;
+    width: 100%; padding: 11px 16px;
+    border: 1.5px solid rgba(0,0,0,.13); border-radius: 4px;
     background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23999' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 13px center;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .84rem;
-    color: var(--charcoal, #1a1a1a);
-    appearance: none;
-    cursor: pointer;
-    transition: border-color .2s;
-    margin-bottom: 14px;
+    font-family: 'DM Sans', sans-serif; font-size: .84rem;
+    color: var(--charcoal, #1a1a1a); appearance: none; cursor: pointer;
+    transition: border-color .2s; margin-bottom: 14px;
 }
-.pd-select:focus {
-    outline: none;
-    border-color: var(--gold, #bfa26a);
-}
+.pd-select:focus { outline: none; border-color: var(--gold, #bfa26a); }
 
-/* Add to cart button */
 .pd-btn-cart {
-    width: 100%;
-    padding: 15px;
-    background: var(--charcoal, #1a1a1a);
-    color: #fff;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .76rem;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    font-weight: 700;
-    cursor: pointer;
-    border-radius: 4px;
+    width: 100%; padding: 15px;
+    background: var(--charcoal, #1a1a1a); color: #fff; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: .76rem;
+    letter-spacing: .2em; text-transform: uppercase; font-weight: 700;
+    cursor: pointer; border-radius: 4px;
     transition: background .25s, transform .15s;
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.pd-btn-cart:hover {
-    background: var(--gold, #bfa26a);
-    color: var(--charcoal, #1a1a1a);
-    transform: translateY(-1px);
-}
+.pd-btn-cart:hover { background: var(--gold, #bfa26a); color: var(--charcoal, #1a1a1a); transform: translateY(-1px); }
 .pd-btn-cart:active { transform: translateY(0); }
-.pd-btn-cart:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-}
+.pd-btn-cart:disabled { background: #ccc; cursor: not-allowed; transform: none; }
 
-/* Stock status */
 .pd-stock {
-    font-size: .74rem;
-    font-family: 'DM Sans', sans-serif;
-    text-align: center;
-    margin-top: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
+    font-size: .74rem; font-family: 'DM Sans', sans-serif;
+    text-align: center; margin-top: 9px;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
 }
 .pd-stock.in  { color: #27ae60; }
 .pd-stock.low { color: #e67e22; }
 .pd-stock.out { color: #e74c3c; }
 
-/* Feature pills */
-.pd-features {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
+.pd-features { display: flex; gap: 8px; flex-wrap: wrap; }
 .pd-feature {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: .7rem;
-    font-family: 'DM Sans', sans-serif;
-    color: #888;
-    background: rgba(0,0,0,.04);
-    padding: 6px 11px;
-    border-radius: 20px;
+    display: flex; align-items: center; gap: 6px;
+    font-size: .7rem; font-family: 'DM Sans', sans-serif; color: #888;
+    background: rgba(0,0,0,.04); padding: 6px 11px; border-radius: 20px;
 }
 .pd-feature i { color: var(--gold, #bfa26a); }
 
-/* Meta row */
-.pd-meta {
-    display: flex;
-    gap: 28px;
-    flex-wrap: wrap;
-}
+.pd-meta { display: flex; gap: 28px; flex-wrap: wrap; }
 .pd-meta-key {
-    font-size: .6rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: #bbb;
-    font-family: 'DM Sans', sans-serif;
-    display: block;
-    margin-bottom: 3px;
+    font-size: .6rem; letter-spacing: .12em; text-transform: uppercase;
+    color: #bbb; font-family: 'DM Sans', sans-serif; display: block; margin-bottom: 3px;
 }
-.pd-meta-val {
-    font-size: .78rem;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--charcoal, #1a1a1a);
-    font-weight: 600;
-}
+.pd-meta-val { font-size: .78rem; font-family: 'DM Sans', sans-serif; color: var(--charcoal, #1a1a1a); font-weight: 600; }
 
-/* Fade-up animation */
-.pd-fade {
-    opacity: 0;
-    transform: translateY(18px);
-    animation: pdUp .5s ease forwards;
-}
+/* Animations */
+.pd-fade { opacity: 0; transform: translateY(18px); animation: pdUp .5s ease forwards; }
 .pd-fade:nth-child(1) { animation-delay: .05s; }
 .pd-fade:nth-child(2) { animation-delay: .12s; }
 .pd-fade:nth-child(3) { animation-delay: .18s; }
@@ -245,13 +172,13 @@
 .pd-fade:nth-child(5) { animation-delay: .30s; }
 @keyframes pdUp { to { opacity:1; transform:translateY(0); } }
 
-/* Responsive */
 @media(max-width: 768px) {
     .pd-info { padding-left: 0; margin-top: 28px; }
     .pd-name { font-size: 1.65rem; }
     .pd-img-wrap { height: 380px; }
     .pd-img-panel { position: static; }
     .pd-section { padding: 28px 0 56px; }
+    .pd-thumb { width: 60px; height: 72px; }
 }
 </style>
 
@@ -267,11 +194,14 @@
 
     <div class="row">
 
-        <!-- LEFT: Image -->
+        <!-- LEFT: Image + Thumbnails -->
         <div class="col-md-6 pd-fade">
             <div class="pd-img-panel">
+
+                <!-- Main image -->
                 <div class="pd-img-wrap">
-                    <img src="{{ single_product.images.url }}"
+                    <img id="pd-main-img"
+                         src="{{ single_product.images.url }}"
                          alt="{{ single_product.product_name }}">
 
                     {% if single_product.stock <= 0 %}
@@ -282,6 +212,21 @@
                         <span class="pd-badge pd-badge-new">New</span>
                     {% endif %}
                 </div>
+
+                <!-- Thumbnail strip -->
+                <div class="pd-thumbs">
+                    <!-- First thumb = main product image -->
+                    <div class="pd-thumb active" onclick="switchImg(this, '{{ single_product.images.url }}')">
+                        <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}">
+                    </div>
+                    <!-- Additional gallery images -->
+                    {% for i in product_gallery %}
+                    <div class="pd-thumb" onclick="switchImg(this, '{{ i.image.url }}')">
+                        <img src="{{ i.image.url }}" alt="{{ single_product.product_name }}">
+                    </div>
+                    {% endfor %}
+                </div>
+
             </div>
         </div>
 
@@ -289,23 +234,33 @@
         <div class="col-md-6">
         <div class="pd-info">
 
-            <!-- Name & Price -->
             <div class="pd-fade">
                 <div class="pd-category-tag">{{ single_product.category }}</div>
                 <h1 class="pd-name">{{ single_product.product_name }}</h1>
                 <div class="pd-price">₹{{ single_product.price }}</div>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                    <div style="display:flex; gap:2px; font-size:1rem;">
+                        <span style="color:{% if single_product.averageReview >= 1 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        <span style="color:{% if single_product.averageReview >= 2 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        <span style="color:{% if single_product.averageReview >= 3 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        <span style="color:{% if single_product.averageReview >= 4 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        <span style="color:{% if single_product.averageReview >= 5 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                    </div>
+                    <span style="font-family:'DM Sans',sans-serif; font-size:.78rem; color:#888;">
+                        {% if single_product.averageReview %}{{ single_product.averageReview|floatformat:1 }} &nbsp;&middot;&nbsp;{% endif %}
+                        {{ single_product.countReview }} review{{ single_product.countReview|pluralize }}
+                    </span>
+                </div>
             </div>
 
             <div class="pd-divider"></div>
 
-            <!-- Description -->
             <div class="pd-fade">
                 <p class="pd-desc">{{ single_product.description }}</p>
             </div>
 
             <div class="pd-divider"></div>
 
-            <!-- Form -->
             <div class="pd-fade">
             <form method="POST" action="{% url 'add_cart' single_product.id %}">
                 {% csrf_token %}
@@ -335,20 +290,16 @@
                     In stock{% if single_product.stock <= 5 %} — only {{ single_product.stock }} remaining{% endif %}
                 </p>
                 {% else %}
-                <button type="button" class="pd-btn-cart" disabled>
-                    Out of Stock
-                </button>
+                <button type="button" class="pd-btn-cart" disabled>Out of Stock</button>
                 <p class="pd-stock out">
                     <i class="bi bi-x-circle-fill"></i> Currently unavailable
                 </p>
                 {% endif %}
-
             </form>
             </div>
 
             <div class="pd-divider"></div>
 
-            <!-- Features -->
             <div class="pd-fade">
                 <div class="pd-features">
                     <div class="pd-feature"><i class="bi bi-arrow-return-left"></i> Easy Returns</div>
@@ -360,24 +311,109 @@
 
             <div class="pd-divider"></div>
 
-            <!-- Meta -->
+            <!-- Rating summary -->
             <div class="pd-fade">
-                <div class="pd-meta">
+                <span class="pd-meta-key" style="margin-bottom:10px; display:block;">Overall Rating</span>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--charcoal,#1a1a1a); line-height:1;">
+                        {{ single_product.averageReview|floatformat:1|default:"—" }}
+                    </span>
                     <div>
-                        <span class="pd-meta-key">SKU</span>
-                        <span class="pd-meta-val">{{ single_product.id }}</span>
-                    </div>
-                    <div>
-                        <span class="pd-meta-key">Category</span>
-                        <span class="pd-meta-val">{{ single_product.category }}</span>
-                    </div>
-                    <div>
-                        <span class="pd-meta-key">Availability</span>
-                        <span class="pd-meta-val" style="color:{% if single_product.stock > 0 %}#27ae60{% else %}#e74c3c{% endif %}">
-                            {% if single_product.stock > 0 %}In Stock{% else %}Out of Stock{% endif %}
+                        <div style="display:flex; gap:3px; font-size:1.1rem;">
+                            <span style="color:{% if single_product.averageReview >= 1 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                            <span style="color:{% if single_product.averageReview >= 2 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                            <span style="color:{% if single_product.averageReview >= 3 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                            <span style="color:{% if single_product.averageReview >= 4 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                            <span style="color:{% if single_product.averageReview >= 5 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        </div>
+                        <span style="font-family:'DM Sans',sans-serif; font-size:.72rem; color:#aaa;">
+                            {{ single_product.countReview }} review{{ single_product.countReview|pluralize }}
                         </span>
                     </div>
                 </div>
+            </div>
+
+            <div class="pd-divider"></div>
+
+            <!-- Write a review -->
+            <div class="pd-fade">
+                <span class="pd-meta-key" style="margin-bottom:12px; display:block;">Write a Review</span>
+                <form action="{% url 'submit_review' single_product.id %}" method="POST">
+                    {% csrf_token %}
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+                    <input type="hidden" name="rating" id="ratingValue">
+                    <div id="pd-star-rating" style="display:flex; gap:4px; margin-bottom:12px;">
+                        <span data-val="1" style="font-size:1.8rem; cursor:pointer; color:#ddd; transition:color .15s;">&#9733;</span>
+                        <span data-val="2" style="font-size:1.8rem; cursor:pointer; color:#ddd; transition:color .15s;">&#9733;</span>
+                        <span data-val="3" style="font-size:1.8rem; cursor:pointer; color:#ddd; transition:color .15s;">&#9733;</span>
+                        <span data-val="4" style="font-size:1.8rem; cursor:pointer; color:#ddd; transition:color .15s;">&#9733;</span>
+                        <span data-val="5" style="font-size:1.8rem; cursor:pointer; color:#ddd; transition:color .15s;">&#9733;</span>
+                    </div>
+                    <script>
+                    (function(){
+                        const wrap  = document.getElementById('pd-star-rating');
+                        const stars = Array.from(wrap.querySelectorAll('span'));
+                        const input = document.getElementById('ratingValue');
+                        const GOLD = '#bfa26a', EMPTY = '#ddd';
+                        function paint(n){ stars.forEach((s,i) => s.style.color = i < n ? GOLD : EMPTY); }
+                        stars.forEach((s, idx) => {
+                            s.addEventListener('mouseenter', () => paint(idx+1));
+                            s.addEventListener('mouseleave', () => paint(Number(input.value)||0));
+                            s.addEventListener('click', () => { input.value = idx+1; paint(idx+1); });
+                        });
+                    })();
+                    </script>
+                    <input type="text" name="subject" class="pd-select"
+                           placeholder="Review title" style="background-image:none; margin-bottom:8px;">
+                    <textarea name="review" rows="3" class="pd-select"
+                              placeholder="Share your thoughts…"
+                              style="background-image:none; height:auto; resize:vertical;"></textarea>
+                    {% if user.is_authenticated %}
+                        {% if orderproduct %}
+                            <button type="submit" class="pd-btn-cart" style="margin-top:8px;">
+                                <i class="bi bi-pencil"></i> Submit Review
+                            </button>
+                        {% else %}
+                            <p class="pd-desc" style="margin-top:8px; display:flex; align-items:center; gap:6px;">
+                                <span style="color:#e67e22; font-size:1rem;">&#9888;</span>
+                                You must <strong style="color:var(--charcoal,#1a1a1a);">purchase this product</strong> before leaving a review.
+                            </p>
+                        {% endif %}
+                    {% else %}
+                        <p class="pd-desc" style="margin-top:8px;">
+                            You must be logged in to post a review.
+                            <a href="{% url 'login' %}" style="color:var(--gold,#bfa26a);">Login now</a>
+                        </p>
+                    {% endif %}
+                    {% include 'includes/alerts.html' %}
+                </form>
+            </div>
+
+            <div class="pd-divider"></div>
+
+            <!-- Review list -->
+            <div class="pd-fade">
+                <span class="pd-meta-key" style="margin-bottom:14px; display:block;">Customer Reviews</span>
+                {% for review in reviews %}
+                <div style="margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid rgba(0,0,0,.06);">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:4px;">
+                        <span class="pd-meta-val">{{ review.user.full_name }}</span>
+                        <span style="font-size:.68rem; color:#bbb; font-family:'DM Sans',sans-serif;">{{ review.updated_at }}</span>
+                    </div>
+                    <div style="display:flex; gap:2px; font-size:.9rem; margin:4px 0 6px;">
+                        <span style="color:{% if review.rating >= 1 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        <span style="color:{% if review.rating >= 2 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        <span style="color:{% if review.rating >= 3 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        <span style="color:{% if review.rating >= 4 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                        <span style="color:{% if review.rating >= 5 %}#bfa26a{% else %}#ddd{% endif %};">&#9733;</span>
+                    </div>
+                    <div class="pd-meta-val" style="margin-bottom:4px;">{{ review.subject }}</div>
+                    <p class="pd-desc" style="margin:0;">{{ review.review }}</p>
+                </div>
+                {% empty %}
+                    <p class="pd-desc">No reviews yet. Be the first!</p>
+                {% endfor %}
             </div>
 
         </div>
@@ -386,5 +422,22 @@
     </div>
 </div>
 </section>
+
+<script>
+function switchImg(thumb, src) {
+    // Update main image with fade
+    const mainImg = document.getElementById('pd-main-img');
+    mainImg.style.opacity = '0';
+    mainImg.style.transition = 'opacity 0.2s ease';
+    setTimeout(() => {
+        mainImg.src = src;
+        mainImg.style.opacity = '1';
+    }, 200);
+
+    // Update active thumb
+    document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+}
+</script>
 
 {% endblock %}

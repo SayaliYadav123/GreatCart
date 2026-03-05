@@ -1,0 +1,499 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ivory:     #FAF8F4;
+    --cream:     #F2EDE4;
+    --sand:      #D6C9B4;
+    --espresso:  #2B1F14;
+    --mink:      #7A6656;
+    --gold:      #B89B6A;
+    --white:     #FFFFFF;
+    --success:   #6B8F71;
+    --font-serif: 'Cormorant Garamond', serif;
+    --font-sans:  'Jost', sans-serif;
+  }
+
+  body {
+    background: var(--ivory);
+    font-family: var(--font-sans);
+    color: var(--espresso);
+  }
+
+  /* ── TOP BAR ── */
+  .sn-topbar {
+    background: var(--espresso);
+    color: var(--sand);
+    text-align: center;
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; padding: 10px 0; font-weight: 500;
+  }
+
+  /* ── HEADER ── */
+  .sn-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--cream);
+    padding: 22px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sn-logo {
+    font-family: var(--font-serif);
+    font-size: 32px; font-weight: 300;
+    color: var(--espresso); letter-spacing: 0.06em; text-decoration: none;
+  }
+  .sn-logo em { font-style: italic; color: var(--gold); }
+  .sn-header-nav {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--sand); font-weight: 500;
+  }
+  .sn-header-nav .sep { color: var(--sand); }
+  .sn-header-nav .active { color: var(--espresso); font-weight: 600; }
+  .sn-print-btn {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--mink); cursor: pointer;
+    background: none; border: 1px solid var(--sand);
+    padding: 9px 18px; transition: border-color 0.2s, color 0.2s;
+  }
+  .sn-print-btn:hover { border-color: var(--espresso); color: var(--espresso); }
+
+  /* ── PAGE ── */
+  .sn-page {
+    max-width: 780px; margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  /* ── SUCCESS STRIP ── */
+  .sn-success-strip {
+    background: var(--success);
+    padding: 14px 28px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .sn-success-strip-text {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--white);
+  }
+
+  /* ── INVOICE CARD ── */
+  .sn-invoice {
+    background: var(--white);
+    border: 1px solid var(--cream);
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  /* ── INVOICE HEADER ── */
+  .sn-inv-head {
+    padding: 36px 40px 32px;
+    border-bottom: 1px solid var(--cream);
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 24px;
+  }
+  .sn-inv-logo-block {}
+  .sn-inv-logo {
+    font-family: var(--font-serif);
+    font-size: 28px; font-weight: 300;
+    color: var(--espresso); letter-spacing: 0.06em;
+    text-decoration: none; display: inline-block; margin-bottom: 10px;
+  }
+  .sn-inv-logo em { font-style: italic; color: var(--gold); }
+  .sn-inv-doc-label {
+    font-size: 10px; letter-spacing: 0.26em;
+    text-transform: uppercase; color: var(--sand);
+    font-weight: 600; margin-bottom: 2px;
+  }
+  .sn-inv-doc-num {
+    font-family: var(--font-serif);
+    font-size: 22px; font-weight: 400; color: var(--espresso);
+    letter-spacing: 0.04em;
+  }
+
+  .sn-inv-to {}
+  .sn-inv-to-label {
+    font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold);
+    font-weight: 600; margin-bottom: 10px;
+    text-align: right;
+  }
+  .sn-inv-to-name {
+    font-family: var(--font-serif);
+    font-size: 18px; font-weight: 400; color: var(--espresso);
+    letter-spacing: 0.03em; margin-bottom: 4px;
+    text-align: right;
+  }
+  .sn-inv-to-addr {
+    font-size: 13px; color: var(--mink);
+    line-height: 1.8; letter-spacing: 0.02em;
+    text-align: right;
+  }
+
+  /* ── META ROW ── */
+  .sn-inv-meta {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--cream);
+  }
+  .sn-meta-cell {
+    padding: 20px 24px;
+    border-right: 1px solid var(--cream);
+  }
+  .sn-meta-cell:last-child { border-right: none; }
+  .sn-meta-label {
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--sand);
+    font-weight: 600; margin-bottom: 5px;
+  }
+  .sn-meta-val {
+    font-size: 13px; color: var(--espresso);
+    font-weight: 500; letter-spacing: 0.02em;
+  }
+  .sn-meta-val.status-completed {
+    color: var(--success);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .sn-meta-val.status-completed::before {
+    content: '';
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--success); flex-shrink: 0;
+  }
+
+  /* ── ITEMS TABLE ── */
+  .sn-inv-body { padding: 0; }
+
+  .sn-inv-table { width: 100%; border-collapse: collapse; }
+
+  .sn-inv-table thead th {
+    padding: 14px 24px;
+    font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--sand);
+    font-weight: 600; text-align: left;
+    background: var(--ivory);
+    border-bottom: 1px solid var(--cream);
+  }
+  .sn-inv-table thead th:nth-child(2) { text-align: center; width: 80px; }
+  .sn-inv-table thead th:last-child { text-align: right; width: 140px; }
+
+  .sn-inv-table tbody tr {
+    border-bottom: 1px solid var(--cream);
+    transition: background 0.12s;
+  }
+  .sn-inv-table tbody tr:last-child { border-bottom: none; }
+  .sn-inv-table tbody tr:hover { background: #fdf9f5; }
+
+  .sn-inv-table tbody td {
+    padding: 20px 24px; vertical-align: top;
+  }
+  .sn-product-name {
+    font-family: var(--font-serif);
+    font-size: 16px; font-weight: 400;
+    color: var(--espresso); letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+  .sn-product-variant {
+    font-size: 11px; color: var(--sand);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    line-height: 1.8;
+  }
+  .sn-qty {
+    text-align: center; font-size: 14px;
+    font-weight: 500; color: var(--mink);
+  }
+  .sn-item-price {
+    text-align: right;
+    font-family: var(--font-serif);
+    font-size: 17px; font-weight: 500; color: var(--espresso);
+  }
+
+  /* ── TOTALS ── */
+  .sn-inv-totals {
+    border-top: 1px solid var(--cream);
+    padding: 24px 24px 0;
+    display: flex; justify-content: flex-end;
+  }
+  .sn-totals-block { width: 280px; }
+  .sn-total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--cream);
+  }
+  .sn-total-row:last-child { border-bottom: none; }
+  .sn-total-label {
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--sand); font-weight: 600;
+  }
+  .sn-total-val {
+    font-family: var(--font-serif);
+    font-size: 16px; color: var(--espresso); font-weight: 400;
+  }
+  .sn-grand-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-top: 16px; padding: 16px 20px;
+    background: var(--espresso);
+  }
+  .sn-grand-label {
+    font-size: 11px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); font-weight: 600;
+  }
+  .sn-grand-val {
+    font-family: var(--font-serif);
+    font-size: 26px; font-weight: 300; color: var(--white);
+  }
+
+  /* ── FOOTER ── */
+  .sn-inv-footer {
+    border-top: 1px solid var(--cream);
+    padding: 24px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .sn-inv-footer-text {
+    font-family: var(--font-serif);
+    font-size: 18px; font-weight: 300; font-style: italic;
+    color: var(--mink); letter-spacing: 0.03em;
+  }
+  .sn-inv-footer-note {
+    font-size: 11px; color: var(--sand);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-align: right;
+  }
+
+  /* ── ACTION BAR ── */
+  .sn-actions {
+    display: flex; justify-content: center; gap: 14px;
+    margin-top: 32px;
+    animation: fadeUp 0.5s ease 0.25s both;
+  }
+  .sn-btn-primary {
+    padding: 14px 32px; background: var(--gold);
+    color: var(--espresso); border: none;
+    font-family: var(--font-sans); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .sn-btn-primary:hover { background: #a08050; color: var(--white); transform: translateY(-1px); }
+  .sn-btn-ghost {
+    padding: 13px 28px; background: transparent;
+    color: var(--mink); border: 1px solid var(--sand);
+    font-family: var(--font-sans); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .sn-btn-ghost:hover { border-color: var(--espresso); color: var(--espresso); }
+
+  /* ── PAGE FOOTER ── */
+  .sn-footer {
+    border-top: 1px solid var(--cream); padding: 28px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--sand);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .sn-footer a { color: var(--mink); text-decoration: none; }
+  .sn-footer a:hover { color: var(--gold); }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    .sn-topbar, .sn-header, .sn-success-strip,
+    .sn-actions, .sn-footer { display: none !important; }
+    .sn-page { padding: 0; max-width: 100%; }
+    .sn-invoice { border: none; box-shadow: none; }
+    body { background: white; }
+  }
+
+  @media (max-width: 640px) {
+    .sn-inv-head { flex-direction: column; }
+    .sn-inv-to-label, .sn-inv-to-name, .sn-inv-to-addr { text-align: left; }
+    .sn-inv-meta { grid-template-columns: 1fr 1fr; }
+    .sn-meta-cell:nth-child(2) { border-right: none; }
+    .sn-header { padding: 18px 20px; }
+    .sn-header-nav { display: none; }
+    .sn-footer { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+
+<!-- TOP BAR -->
+<div class="sn-topbar">Free shipping on orders over ₹1500 &nbsp;·&nbsp; Easy returns within 30 days</div>
+
+<!-- HEADER -->
+<header class="sn-header">
+  <a href="/" class="sn-logo">Style<em>Nest</em></a>
+  <div class="sn-header-nav">
+    <span>My Account</span>
+    <span class="sep">›</span>
+    <span>My Orders</span>
+    <span class="sep">›</span>
+    <span class="active">Invoice</span>
+  </div>
+  <button class="sn-print-btn" onclick="window.print()">
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+      <rect x="2" y="5" width="9" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M4 5V2h5v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 9h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    Print
+  </button>
+</header>
+
+<!-- PAGE -->
+<div class="sn-page">
+
+  <!-- Success strip -->
+  <div class="sn-success-strip">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="6.5" stroke="white" stroke-width="1.3"/>
+      <path d="M5 8l2.5 2.5L11 5.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="sn-success-strip-text">Payment confirmed — your order is on its way</span>
+  </div>
+
+  <!-- Invoice card -->
+  <div class="sn-invoice">
+
+    <!-- Header: logo + billed to -->
+    <div class="sn-inv-head">
+      <div class="sn-inv-logo-block">
+        <a href="/" class="sn-inv-logo">Style<em>Nest</em></a>
+        <div class="sn-inv-doc-label">Invoice</div>
+        <div class="sn-inv-doc-num">#{{ order.order_number }}</div>
+      </div>
+      <div class="sn-inv-to">
+        <div class="sn-inv-to-label">Invoiced To</div>
+        <div class="sn-inv-to-name">{{ order.full_name }}</div>
+        <div class="sn-inv-to-addr">
+          {{ order.full_address }}<br>
+          {{ order.city }}, {{ order.state }}<br>
+          {{ order.country }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Meta row -->
+    <div class="sn-inv-meta">
+      <div class="sn-meta-cell">
+        <div class="sn-meta-label">Order Number</div>
+        <div class="sn-meta-val">#{{ order.order_number }}</div>
+      </div>
+      <div class="sn-meta-cell">
+        <div class="sn-meta-label">Transaction ID</div>
+        <div class="sn-meta-val">{{ order.payment.payment_id }}</div>
+      </div>
+      <div class="sn-meta-cell">
+        <div class="sn-meta-label">Order Date</div>
+        <div class="sn-meta-val">{{ order.created_at|date:"d M Y" }}</div>
+      </div>
+      <div class="sn-meta-cell">
+        <div class="sn-meta-label">Status</div>
+        <div class="sn-meta-val status-completed">{{ order.payment.status }}</div>
+      </div>
+    </div>
+
+    <!-- Items table -->
+    <div class="sn-inv-body">
+      <table class="sn-inv-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order_detail %}
+          <tr>
+            <td>
+              <div class="sn-product-name">{{ item.product.product_name }}</div>
+              {% if item.variations.all %}
+              <div class="sn-product-variant">
+                {% for v in item.variations.all %}
+                  {{ v.variation_category|capfirst }}: {{ v.variation_value|capfirst }}<br>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </td>
+            <td class="sn-qty">× {{ item.quantity }}</td>
+            <td class="sn-item-price">₹{{ item.product_price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Totals -->
+    <div class="sn-inv-totals">
+      <div class="sn-totals-block">
+        <div class="sn-total-row">
+          <span class="sn-total-label">Subtotal</span>
+          <span class="sn-total-val">₹{{ subtotal }}</span>
+        </div>
+        <div class="sn-total-row">
+          <span class="sn-total-label">Tax (2%)</span>
+          <span class="sn-total-val">₹{{ order.tax }}</span>
+        </div>
+        <div class="sn-total-row">
+          <span class="sn-total-label">Shipping</span>
+          <span class="sn-total-val" style="color:var(--gold);font-size:12px;font-family:var(--font-sans);letter-spacing:0.1em;text-transform:uppercase;">Free</span>
+        </div>
+        <div class="sn-grand-row">
+          <span class="sn-grand-label">Grand Total</span>
+          <span class="sn-grand-val">₹{{ order.order_total }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice footer -->
+    <div class="sn-inv-footer">
+      <div class="sn-inv-footer-text">Thank you for shopping with us.</div>
+      <div class="sn-inv-footer-note">
+        StyleNest · Crafted with care<br>
+        support@stylenest.com
+      </div>
+    </div>
+
+  </div><!-- /invoice -->
+
+  <!-- Action buttons -->
+  <div class="sn-actions">
+    <button class="sn-btn-primary" onclick="window.print()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+        <rect x="2" y="5" width="9" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M4 5V2h5v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 9h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      Print Invoice
+    </button>
+    <a href="{% url 'my_orders' %}" class="sn-btn-ghost">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M8 6H2m0 0l2.5-2.5M2 6l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Orders
+    </a>
+  </div>
+
+</div>
+
+<!-- PAGE FOOTER -->
+<footer class="sn-footer">
+  <span>© 2025 StyleNest</span>
+  <span>
+    <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="#">Terms of Service</a> &nbsp;·&nbsp;
+    <a href="#">Contact</a>
+  </span>
+  <span>Crafted with care</span>
+</footer>
+
+{% endblock %}

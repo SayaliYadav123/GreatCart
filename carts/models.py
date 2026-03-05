@@ -18,6 +18,15 @@ class Cart(models.Model):
         return self.cart_id
 
 
+class TryOnResult(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='tryon_results')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='tryon_results')
+    original_image = models.ImageField(upload_to='tryon_originals/', blank=True, null=True)
+    apparel_image = models.ImageField(upload_to='tryon_apparels/', blank=True, null=True)
+    result_image = models.ImageField(upload_to='tryon_results/', blank=True, null=True)
+    result_image_url = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class CartItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

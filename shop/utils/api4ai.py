@@ -6,8 +6,11 @@ from datetime import datetime
 import uuid
 from django.contrib.auth.models import User
 from shop.models import Product
+
 API_URL = "https://api4ai.cloud/virtual-try-on/v1/results"
-API_KEY = "a4a-Cj2zofeIFnUhA2lqmsQpJjYwKQhBVItc"
+API_KEY = "a4a-2S8g7fpJb41F2ewahzzSQ5SLj5q6rZYS"
+
+
 def call_tryon_api(person_path, cloth_path, product_id, user):
     try:
         print("USER IMAGE PATH:", person_path)
@@ -62,7 +65,7 @@ def call_tryon_api(person_path, cloth_path, product_id, user):
             f.write(base64.b64decode(img_base64))
         result_url = settings.MEDIA_URL + "tryon_results/" + result_filename
         print("RESULT SAVED AT:", result_url)
-        
+        from carts.models import TryOnResult
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
@@ -77,27 +80,31 @@ def call_tryon_api(person_path, cloth_path, product_id, user):
         # return tryon_result
         if user and user.is_authenticated:
             tryon_result = TryOnResult.objects.create(
-        user=user,
-        product=product,
-        result_image_url=result_url
-    )
+                user=user,
+                product=product,
+                result_image_url=result_url
+            )
             print(f"TryOn Result saved to database with ID: {tryon_result.id}")
             return tryon_result
         else:
             print("ℹ️ Anonymous user — skipping DB save")
+
             class TempResult:
                 result_image_url = result_url
+
             return TempResult()
-    
-    
+
+
 
     # Anonymous user — skip DB save, just return the URL as a simple object
-    
+
     except Exception as e:
         print("GENERAL ERROR IN API4AI:", e)
         import traceback
         traceback.print_exc()
         return None
+
+
 def get_latest_tryon_for_product(user, product_id):
     from carts.models import TryOnResult
     try:

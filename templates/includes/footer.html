@@ -8,7 +8,7 @@
             <div class="col-md-8 d-flex flex-wrap gap-4 justify-content-md-end footer-links">
                 <a href="#">Home</a>
                 <a href="#shop">Shop</a>
-                <a href="#about">About</a>
+                <a href="{% url 'about' %}">About</a>
                 <a href="#">Privacy</a>
                 <a href="#">Contact</a>
             </div>
@@ -17,3 +17,25 @@
         <p class="footer-copy text-center mb-0">© 2026 StyleNest. All rights reserved.</p>
     </div>
 </footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+
+    // Click a thumbnail → swap main image with fade + set active state
+    $('.pd-thumb').click(function(){
+      var newSrc = $(this).find('img').attr('src');
+
+      // Fade out → swap src → fade in
+      $('#pd-main-img').fadeTo(150, 0, function(){
+        $(this).attr('src', newSrc).fadeTo(300, 1);
+      });
+
+      // Update active thumbnail border
+      $('.pd-thumb').removeClass('active');
+      $(this).addClass('active');
+    });
+
+  });
+</script>
+</body>
+</html>
