@@ -2,6 +2,8 @@ from functools import reduce
 import json
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
+
+from GreatCart import settings
 from .forms import OrderForm
 from carts.models import CartItem
 import datetime
@@ -61,6 +63,7 @@ def place_order(request,total=0, quantity=0):
                 'total':total,
                 'tax':tax,
                 'grand_total':grand_total,
+                'paypal_client_id': settings.PAYPAL_CLIENT_ID,
             }
             return render(request,'orders/payments.html',context)
         else:

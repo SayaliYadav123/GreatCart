@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = config('SECRET_KEY')
-
+PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 CSRF_TRUSTED_ORIGINS = [
