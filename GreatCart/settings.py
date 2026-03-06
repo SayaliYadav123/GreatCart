@@ -38,7 +38,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 CSRF_TRUSTED_ORIGINS = [
     "https://stylenest-j09m.onrender.com",
 ]
-ALLOWED_HOSTS = ['stylenest-j09m.onrender.com']
+ALLOWED_HOSTS = ['stylenest-j09m.onrender.com','127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
