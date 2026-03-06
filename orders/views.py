@@ -74,9 +74,11 @@ def place_order(request, total=0, quantity=0):
 
 @csrf_exempt
 def payments(request):
-    body = json.loads(request.body)
+    try:
+        body = json.loads(request.body)
+    except Exception as e:
+        return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-    # Guard: if order already processed (duplicate PayPal callback), return success anyway
     try:
         order = Order.objects.get(
             user=request.user,
@@ -84,79 +86,80 @@ def payments(request):
             order_number=body['orderID']
         )
     except Order.DoesNotExist:
+        # Already processed — find the order and return so redirect works
         try:
             order = Order.objects.get(order_number=body['orderID'])
-            payment = Payment.objects.filter(order=order).first()
+            existing_payment = Payment.objects.filter(payment_id=body['transID']).first()
             return JsonResponse({
                 'order_number': order.order_number,
-                'transID': payment.payment_id if payment else body['transID'],
+                'transID': existing_payment.payment_id if existing_payment else body['transID'],
             })
         except Order.DoesNotExist:
             return JsonResponse({'error': 'Order not found'}, status=404)
+    except Exception as e:
+        print(f'Order lookup error: {e}')
+        return JsonResponse({'error': str(e)}, status=500)
 
-    # Save payment
-    payment = Payment(
-        user=request.user,
-        payment_id=body['transID'],
-        payment_method=body['payment_method'],
-        amount_paid=order.order_total,
-        status=body['status'],
-    )
-    payment.save()
+    try:
+        payment = Payment(
+            user=request.user,
+            payment_id=body['transID'],
+            payment_method=body['payment_method'],
+            amount_paid=order.order_total,
+            status=body['status'],
+        )
+        payment.save()
 
-    order.payment = payment
-    order.is_ordered = True
-    order.save()
+        order.payment = payment
+        order.is_ordered = True
+        order.save()
 
-    # Move cart items to OrderProduct
-    cart_items = CartItem.objects.filter(user=request.user)
-    for item in cart_items:
-        if OrderProduct.objects.filter(order=order, product=item.product).exists():
-            continue
+        cart_items = CartItem.objects.filter(user=request.user)
+        for item in cart_items:
+            if OrderProduct.objects.filter(order=order, product=item.product).exists():
+                continue
 
-        orderproduct = OrderProduct()
-        orderproduct.order_id = order.id
-        orderproduct.payment = payment
-        orderproduct.user_id = request.user.id
-        orderproduct.product_id = item.product_id
-        orderproduct.quantity = item.quantity
-        orderproduct.product_price = item.product.price
-        orderproduct.ordered = True
-        orderproduct.save()
+            orderproduct = OrderProduct()
+            orderproduct.order_id = order.id
+            orderproduct.payment = payment
+            orderproduct.user_id = request.user.id
+            orderproduct.product_id = item.product_id
+            orderproduct.quantity = item.quantity
+            orderproduct.product_price = item.product.price
+            orderproduct.ordered = True
+            orderproduct.save()
 
-        cart_item = CartItem.objects.get(id=item.id)
-        product_variation = cart_item.variations.all()
-        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
-        orderproduct.variations.set(product_variation)
-        orderproduct.save()
+            cart_item = CartItem.objects.get(id=item.id)
+            product_variation = cart_item.variations.all()
+            orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+            orderproduct.variations.set(product_variation)
+            orderproduct.save()
 
-        # Reduce stock
-        product = Product.objects.get(id=item.product_id)
-        product.stock -= item.quantity
-        product.save()
+            product = Product.objects.get(id=item.product_id)
+            product.stock -= item.quantity
+            product.save()
 
-    # Clear cart
-    CartItem.objects.filter(user=request.user).delete()
+        CartItem.objects.filter(user=request.user).delete()
 
-    # ✅ Email wrapped in try/except — a mail failure will NEVER block
-    #    the JsonResponse or break the redirect to order_complete
+    except Exception as e:
+        print(f'Payment processing error: {e}')
+        return JsonResponse({'error': str(e)}, status=500)
+
     try:
         mail_subject = 'Thank you for your order!'
         message = render_to_string('orders/order_recieved_email.html', {
-            'user':  request.user,
+            'user': request.user,
             'order': order,
         })
         send_email = EmailMessage(mail_subject, message, to=[request.user.email])
         send_email.send()
     except Exception as e:
-        print(f'Order confirmation email failed: {e}')
+        print(f'Email failed: {e}')
 
-    # Always return JsonResponse so JS redirect fires regardless
     return JsonResponse({
         'order_number': order.order_number,
-        'transID':      payment.payment_id,
+        'transID': payment.payment_id,
     })
-
 
 def order_complete(request):
     order_number = request.GET.get('order_number')
